@@ -1,20 +1,40 @@
 package adminClient;
 
+/**
+ * Bean-class for a Test.
+ */
+
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 
 /**
  * Created by Jonas on 2016-03-03.
  */
+
 public class Test {
+
+    private SimpleStringProperty name;
     private SimpleStringProperty subject;
     private SimpleIntegerProperty maxTime;
     private SimpleIntegerProperty maxScore;
+    private SimpleStringProperty dateCreated;
 
-    public Test(String subject, int maxTime, int maxScore) {
+    public Test(String name, String subject, String dateCreated) {
+        this.name = new SimpleStringProperty(name);
         this.subject = new SimpleStringProperty(subject);
-        this.maxTime = new SimpleIntegerProperty(maxTime);
-        this.maxScore = new SimpleIntegerProperty(maxScore);
+        this.dateCreated = new SimpleStringProperty(dateCreated);
+    }
+
+    public String getName() {
+        return name.get();
+    }
+
+    public SimpleStringProperty nameProperty() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name.set(name);
     }
 
     public String getSubject() {
@@ -53,4 +73,15 @@ public class Test {
         this.maxScore.set(maxScore);
     }
 
+    public String getDateCreated() {
+        return dateCreated.get();
+    }
+
+    public SimpleStringProperty dateCreatedProperty() {
+        return dateCreated;
+    }
+
+    public void setDateCreated(String dateCreated) {
+        this.dateCreated.set(dateCreated);
+    }
 }

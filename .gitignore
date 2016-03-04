@@ -4,3 +4,6 @@
 .settings/
 target/
 Projekt1.iml
+/src/main/java/server/
+/src/main/java/studentClient/
+/src/test

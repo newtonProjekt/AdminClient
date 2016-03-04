@@ -1,6 +1,9 @@
 package adminClient;
 
-import javafx.collections.FXCollections;
+/**
+ * The model for a Table based on the class Test.
+ */
+
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -12,25 +15,26 @@ import javafx.scene.control.cell.PropertyValueFactory;
 
 public class TestTable extends TableView<Test>{
 
-    final ObservableList<Test> testObservableList = FXCollections.observableArrayList(
-            new Test("Utveckling av desktopapplikationer", 80, 60),
-            new Test("Utveckling av webbapplikationer", 80, 60)
-    );
-
+    private TableColumn<Test, Integer> testName = new TableColumn<Test, Integer>("Namn");
     private TableColumn<Test, String> testSubject = new TableColumn<Test, String>("Ämne");
-    private TableColumn<Test, Integer> testMaxTime = new TableColumn<Test, Integer>("Tid");
-    private TableColumn<Test, Integer> testMaxScore = new TableColumn<Test, Integer>("Maxpoäng");
+    private TableColumn<Test, String> testDateCreated = new TableColumn<Test, String>("Skapat");
 
     public TestTable() {
-
         this.setEditable(true);
 
+        testName.setCellValueFactory(new PropertyValueFactory<Test, Integer>("name"));
+        testName.setPrefWidth(200);
         testSubject.setCellValueFactory(new PropertyValueFactory<Test,String>("subject"));
-        testMaxTime.setCellValueFactory(new PropertyValueFactory<Test,Integer>("maxTime"));
-        testMaxScore.setCellValueFactory(new PropertyValueFactory<Test,Integer>("maxScore"));
+        testSubject.setPrefWidth(500);
+        testDateCreated.setCellValueFactory(new PropertyValueFactory<Test, String>("dateCreated"));
 
-        this.setItems(testObservableList);
-
-        this.getColumns().setAll(testSubject, testMaxTime, testMaxScore);
+        this.getColumns().setAll(testName, testSubject, testDateCreated);
     }
+
+    public void setTableList (ObservableList<Test> testObservableList){
+        this.setItems(testObservableList);
+    }
+
+
+
 }
