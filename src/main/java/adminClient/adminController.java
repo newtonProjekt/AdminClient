@@ -4,11 +4,19 @@ package adminClient;
  * The adminController.
  */
 
+import adminClient.beans.Login;
+import adminClient.beans.StudentClass;
+import adminClient.beans.Test;
+import adminClient.beans.User;
+import adminClient.gui.AdminView;
+import adminClient.gui.LoginBox;
+import adminClient.gui.TestTable;
+import adminClient.gui.UserTable;
+import adminClient.network.CommandHandler;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.control.TableView;
 import javafx.stage.Stage;
 
@@ -18,22 +26,39 @@ import javafx.stage.Stage;
 
 public class AdminController extends Application{
     private AdminView view;
+    private CommandHandler commandHandler;
+    private LoginBox loginBox;
 
+    //Components for tables:
     private TableView<User> userTableView = new UserTable();
     private TableView<Test> testTableView = new TestTable();
     private ObservableList<Test> testObservableList = FXCollections.observableArrayList();
     private ObservableList<User> userObservableList = FXCollections.observableArrayList();
-    private Stage loginStage = new Stage();
+    private ObservableList<StudentClass> studentClassObservableList = FXCollections.observableArrayList();
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        view = new AdminView(primaryStage);
+        //Create objects of a CommandHandler and a LoginBox:
+        commandHandler = new CommandHandler();
+        loginBox = new LoginBox();
 
+        //Start listening for actions on the loginbutton:
+        loginBox.loginButtonListener(event -> {
+            login();
+        });
+
+        //Show the loginbox and wait for action:
+        loginBox.showAndWait();
+
+        //If the login goes well, proceed building the rest of the application:
+        view = new AdminView(primaryStage);
+        //Set tables and connect observablelists to them:
         view.setUserTableView(userTableView);
         view.setTestTableView(testTableView);
-        
+        testTableView.setItems(testObservableList);
+        userTableView.setItems(userObservableList);
 
-        // TEST --------------------------------------------------------------------------------------------------------
+        // TEST_AREA ---------------------------------------------------------------------------------------------------
 
         testObservableList.addAll(
                 new Test("Delprov 1, JavaFX","Utveckling av desktopapplikationer","2016-01-28"),
@@ -41,22 +66,57 @@ public class AdminController extends Application{
                 new Test("Delprov 1, HTML och CSS","Utveckling av webbapplikationer","2016-03-03")
         );
 
-        userObservableList.addAll(
-                new User("770642-8913","Ted","Borg","Java1"),
-                new User("870705-8914","Godzilla","Hårdisksson",".Net1"),
-                new User("8905047712", "Romeo", "Olsson", "Poesi2")
-        );
 
-        view.deleteTestBtnListener(new EventHandler<ActionEvent>() {
-            public void handle(ActionEvent event) {
-                testObservableList.remove(view.getSelectedTest());
-            }
+        //ADD CLASS
+        view.addClassBtnListener(event1 -> {
+            String studentClass = view.getStudentClass();
+            studentClassObservableList.add(new StudentClass(studentClass));
+            view.clearAddClassTextField();
         });
 
-        //--------------------------------------------------------------------------------------------------------------
 
-        testTableView.setItems(testObservableList);
-        userTableView.setItems(userObservableList);
+        //ADD USER:
+        view.addUserBtnListener(event -> {
+            String fName = view.getFname();
+            String lName = view.getLname();
+            String pNumb = view.getPnumb();
+            StudentClass studentClass = view.getSelectedClass();
+
+            userObservableList.add(new User(pNumb,fName,lName,studentClass));
+
+            view.clearAddUserTextFields();
+        });
+
+        //DELETE CLASS
+        view.deleteTestBtnListener(event -> testObservableList.remove(view.getSelectedTest()));
+
+        //DELETE USER
+        view.deleteUserBtnListener(event -> userObservableList.remove(view.getSelectedUser()));
+
+        //IF CLASSLIST CHANGED, UPDATE COMBOBOX:
+        studentClassObservableList.addListener((ListChangeListener<StudentClass>) c -> {
+            view.addUserComboBox(studentClassObservableList);
+        });
+
+
+        //--------------------------------------------------------------------------------------------------------------
+    }
+
+    void login(){
+        String username = loginBox.getUserTextField();
+        String password = loginBox.getPasswordField();
+
+        if (username.equals("admin") && password.equals("admin")){
+            //Create a login-bean:
+            Login userLogin = new Login(username,password);
+            //Send it to the commandhandler:
+            commandHandler.createLoginJson(userLogin);
+            //Close the loginbox:
+            loginBox.close();
+        }
+        else {
+            loginBox.setErrorLabel("Felaktigt användarnamn eller lösenord.");
+        }
 
     }
 
