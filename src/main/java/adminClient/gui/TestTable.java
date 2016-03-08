@@ -1,9 +1,10 @@
-package adminClient;
+package adminClient.gui;
 
 /**
  * The model for a Table based on the class Test.
  */
 
+import adminClient.beans.Test;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -15,7 +16,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 
 public class TestTable extends TableView<Test>{
 
-    private TableColumn<Test, Integer> testName = new TableColumn<Test, Integer>("Namn");
+    private TableColumn<Test, Integer> testName = new TableColumn<Test, Integer>("Prov");
     private TableColumn<Test, String> testSubject = new TableColumn<Test, String>("Ämne");
     private TableColumn<Test, String> testDateCreated = new TableColumn<Test, String>("Skapat");
 
@@ -23,10 +24,11 @@ public class TestTable extends TableView<Test>{
         this.setEditable(true);
 
         testName.setCellValueFactory(new PropertyValueFactory<Test, Integer>("name"));
-        testName.setPrefWidth(200);
+        testName.setPrefWidth(348);
         testSubject.setCellValueFactory(new PropertyValueFactory<Test,String>("subject"));
-        testSubject.setPrefWidth(500);
+        testSubject.setPrefWidth(350);
         testDateCreated.setCellValueFactory(new PropertyValueFactory<Test, String>("dateCreated"));
+        testDateCreated.setPrefWidth(100);
 
         this.getColumns().setAll(testName, testSubject, testDateCreated);
     }
