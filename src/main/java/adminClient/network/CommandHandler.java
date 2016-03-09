@@ -1,8 +1,7 @@
 package adminClient.network;
 
 import adminClient.beans.Login;
-import adminClient.beans.User;
-import adminClient.gui.LoginBox;
+import adminClient.beans.Student;
 import com.google.gson.Gson;
 
 /**
@@ -18,7 +17,7 @@ public class CommandHandler {
 
     }
 
-    public void createUserJson(User user){
+    public void createUserJson(Student user){
         System.out.println(gson.toJson(user));
     }
 }

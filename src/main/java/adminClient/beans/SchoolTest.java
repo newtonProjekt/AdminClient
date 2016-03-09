@@ -11,7 +11,8 @@ public class SchoolTest {
 
 	private int id;
 	private String type;
-	private List<Question> questions;
+    private int testTime;
+    private List<Question> questions;
 	
 	public SchoolTest(){
 		questions = new ArrayList<Question>();
@@ -22,7 +23,15 @@ public class SchoolTest {
 		questions = new ArrayList<Question>();
 	}
 
-	public int getId() {
+    public int getTestTime() {
+        return testTime;
+    }
+
+    public void setTestTime(int testTime) {
+        this.testTime = testTime;
+    }
+
+    public int getId() {
 		return id;
 	}
 

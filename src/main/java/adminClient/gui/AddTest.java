@@ -1,30 +1,45 @@
 package adminClient.gui;
 
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
+/**
+ * Class for creating a "Add test-form".
+ */
+
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
-import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 
 import java.util.ArrayList;
-import java.util.Objects;
 
 /**
  * Created by Jonas on 2016-03-07.
  */
-public class AddTest extends GridPane{
+
+public class AddTest extends BorderPane{
+
     //Components:
-    private Text headerText = new Text("Skapa nytt prov:");
+    private Text testHeader = new Text("Skapa nytt prov:");
+    private GridPane testGrid = new GridPane();
+    private Label testName = new Label("Provnamn:");
+    private TextField testNameTextField = new TextField();
+    private Label subjectLabel = new Label("Ämne:");
+    private TextField subjectTextField = new TextField();
+    private Label timeLabel = new Label("Tid i minuter:");
+    private TextField timeTextField = new TextField();
+    private Button proceedBtn = new Button("Vidare");
+    private GridPane questionGrid = new GridPane();
+    private Label scoreLabel = new Label("Poäng:");
+    private TextField scoreTextField = new TextField();
+    private HBox bottomBtnHbox = new HBox(595);
+    private Button startOverBtn = new Button("Börja om");
+    private Text questionHeader = new Text("Skapa ny fråga:");
     private Label selfCorrectingLabel = new Label("Självrättande prov?");
     private CheckBox selfCorrectingBox = new CheckBox();
     private Label questionLabel = new Label("Fråga:");
@@ -38,56 +53,86 @@ public class AddTest extends GridPane{
     private RadioButton textAnswerRb = new RadioButton("Textsvar");
     private RadioButton multiAnswerRb = new RadioButton("Flervalsalternativ");
     private Label answersAmountLabel = new Label("Antal svar:");
-    private Label correctAnswerLabel = new Label("Välj det rätta svaret:");
+    private Label correctAnswerLabel = new Label("Rätt svar:");
     private ComboBox<Integer> answersAmountCmbBox = new ComboBox();
     private ComboBox<String> correctAnswerCmbBox = new ComboBox();
     private VBox multiAnswerBox;
-    private HBox buttonHbox = new HBox(220);
     private ArrayList<TextField> answersList = new ArrayList<>();
     private Button saveQuestionBtn = new Button("Spara fråga");
-    private Button createTestBtn = new Button("Skapa Prov");
+    private Button createTestBtn = new Button("Skapa prov");
     private ColumnConstraints column1 = new ColumnConstraints();
     private int answerAmount;
 
     public AddTest() {
-        //Init gridpane:
-        this.setPadding(new Insets(30,30,30,30));
-        this.setHgap(10);
-        this.setVgap(10);
-        this.setStyle("-fx-border-color: #e6e6e6; -fx-background-color: white");
-        this.getColumnConstraints().add(column1);
-        this.setAlignment(Pos.TOP_CENTER);
+
+        //Init testGridPane:
+        testGrid.setPadding(new Insets(30,30,30,30));
+        testGrid.setHgap(10);
+        testGrid.setVgap(10);
+        testGrid.setStyle(" -fx-background-color: white");
+        testGrid.getColumnConstraints().add(column1);
+        testGrid.setAlignment(Pos.TOP_CENTER);
+
+        //Init QuestionGridpane:
+        questionGrid.setPadding(new Insets(30,30,30,30));
+        questionGrid.setHgap(10);
+        questionGrid.setVgap(10);
+        questionGrid.setStyle(" -fx-background-color: white");
+        questionGrid.getColumnConstraints().add(column1);
+        questionGrid.setAlignment(Pos.TOP_CENTER);
+
+        //Init BorderPane (this):
+        this.setStyle("-fx-background-color: white;");
+        this.setTop(testGrid);
+        this.setBottom(bottomBtnHbox);
 
         //init components:
         column1.setHalignment(HPos.RIGHT);
-        headerText.setFont(Font.font("Tahoma", FontWeight.NORMAL, 15));
+        questionHeader.setFont(Font.font("Tahoma", FontWeight.NORMAL, 15));
+        testHeader.setFont(Font.font("Tahoma", FontWeight.NORMAL, 15));
         textAnswerRb.setToggleGroup(rbGroup);
         multiAnswerRb.setToggleGroup(rbGroup);
         textAnswerRb.setSelected(true);
         radioButtonBox.getChildren().addAll(textAnswerRb,multiAnswerRb);
-        buttonHbox.getChildren().addAll(saveQuestionBtn, createTestBtn);
-        questionTextArea.setPrefWidth(400);
-        questionTextArea.setMinHeight(400);
-        questionTextArea.setPrefHeight(100);
+        bottomBtnHbox.getChildren().addAll(startOverBtn, createTestBtn);
+        questionTextArea.setPrefHeight(400);
         questionTextArea.setMinHeight(100);
-        answerTextArea.setPrefWidth(400);
-        answerTextArea.setPrefHeight(100);
+        answerTextArea.setPrefHeight(400);
+        answerTextArea.setMinHeight(100);
         answersAmountCmbBox.getItems().addAll(2,3,4,5,6,7,8,9,10);
-        answersAmountCmbBox.setPromptText("0");
+        answersAmountCmbBox.setValue(3);
         correctAnswerCmbBox.setPromptText("-Välj-");
+        bottomBtnHbox.setPadding(new Insets(5,5,5,5));
+        startOverBtn.setPrefWidth(90);
+        createTestBtn.setPrefWidth(90);
+        testNameTextField.setMinWidth(400);
+        subjectTextField.setMinWidth(400);
+        timeTextField.setMaxWidth(50);
+        scoreTextField.setMaxWidth(50);
 
+        //Add components to test-gridpane:
+        testGrid.add(testHeader,1,0);
+        testGrid.add(testName,0,1);
+        testGrid.add(subjectLabel,0,2);
+        testGrid.add(timeLabel,0,3);
+        testGrid.add(selfCorrectingLabel,0,4);
+        testGrid.add(testNameTextField,1,1);
+        testGrid.add(subjectTextField,1,2);
+        testGrid.add(timeTextField,1,3);
+        testGrid.add(selfCorrectingBox,1,4);
+        testGrid.add(proceedBtn,1,5);
 
-        //Add components to gridpane:
-        this.add(headerText,1,0);
-        this.add(selfCorrectingLabel,0,1);
-        this.add(questionLabel,0,2);
-        this.add(answerFormLbl,0,3);
-        this.add(selfCorrectingBox,1,1);
-        this.add(questionTextArea,1,2);
-        this.add(radioButtonBox,1,3);
-        this.add(answerLabel,0,4);
-        this.add(answerTextArea,1,4);
-        this.add(buttonHbox,1,5);
+        //Add components to question-gridpane:
+        questionGrid.add(questionHeader,1,0);
+        questionGrid.add(questionLabel,0,1);
+        questionGrid.add(answerFormLbl,0,2);
+        questionGrid.add(questionTextArea,1,1);
+        questionGrid.add(radioButtonBox,1,2);
+        questionGrid.add(answerLabel,0,3);
+        questionGrid.add(answerTextArea,1,3);
+        questionGrid.add(scoreLabel,0,5);
+        questionGrid.add(scoreTextField,1,5);
+        questionGrid.add(saveQuestionBtn,1,6);
 
         //Listener for "Selfcorrecting test-checkbox":
         selfCorrectingBox.selectedProperty().addListener((observable, oldValue, newValue) -> {
@@ -106,47 +151,50 @@ public class AddTest extends GridPane{
         multiAnswerRb.setOnAction(event -> {
 
             //Remove all the old components and add the right ones:
-            this.getChildren().removeAll(answerLabel,answerTextArea,buttonHbox);
+            questionGrid.getChildren().removeAll(scoreLabel, scoreTextField, answerLabel,answerTextArea,saveQuestionBtn,answersAmountLabel,answersAmountCmbBox);
 
-            this.add(answersAmountLabel,0,4);
-            this.add(answersAmountCmbBox,1,4);
+            questionGrid.add(answersAmountLabel,0,4);
+            questionGrid.add(answersAmountCmbBox,1,4);
+            answersAmountCmbBox.setValue(3);
+            Event.fireEvent(answersAmountCmbBox, new ActionEvent());
         });
 
         //Listener for the "Textstring answer-radiobutton":
         textAnswerRb.setOnAction(event -> {
 
             //Remove all the old components and add the right ones:
-            this.getChildren().removeAll(answerLabel, answerTextArea, buttonHbox, multiAnswerBox, correctAnswerCmbBox, answersAmountLabel, correctAnswerLabel, answersAmountCmbBox);
-            this.add(answerLabel,0,4);
-            this.add(answerTextArea,1,4);
-            this.add(buttonHbox,1,5);
+            questionGrid.getChildren().removeAll(scoreLabel, scoreTextField, answerLabel, answerTextArea, saveQuestionBtn, multiAnswerBox, correctAnswerCmbBox, answersAmountLabel, correctAnswerLabel, answersAmountCmbBox);
+            questionGrid.add(answerLabel,0,4);
+            questionGrid.add(answerTextArea,1,4);
+            questionGrid.add(scoreLabel,0,5);
+            questionGrid.add(scoreTextField,1,5);
+            questionGrid.add(saveQuestionBtn,1,6);
         });
 
         //Listener for amount of answers in a multi answer-question:
         answersAmountCmbBox.setOnAction(event -> {
 
-            if (answersAmountCmbBox.getSelectionModel().getSelectedItem() != 0) {
-                //Clear the old answer-list and remove all old components:
-                answersList.clear();
-                this.getChildren().removeAll(answerLabel, multiAnswerBox, correctAnswerLabel, correctAnswerCmbBox);
+            //Clear the old answer-list and remove all old components:
+            answersList.clear();
+            questionGrid.getChildren().removeAll(answerLabel, multiAnswerBox, correctAnswerLabel, correctAnswerCmbBox);
 
-                //Save the amount in a variable, create a VBox:
-                answerAmount = answersAmountCmbBox.getSelectionModel().getSelectedItem();
-                multiAnswerBox = new VBox(5);
+            //Save the amount in a variable, create a VBox:
+            answerAmount = answersAmountCmbBox.getSelectionModel().getSelectedItem();
+            multiAnswerBox = new VBox(5);
 
-                //Create as many textfield as the amount is, add them to a arraylist and to the VBox we just created:
-                for (int i = 0; i < answerAmount; i++) {
-                    questionTextField = new TextField();
-                    answersList.add(questionTextField);
-                    multiAnswerBox.getChildren().add(questionTextField);
-                }
-
-                //Add relevant components to the gridpane:
-                this.add(answerLabel, 0, 5);
-                this.add(multiAnswerBox, 1, 5);
-                this.add(correctAnswerLabel, 0, 6);
-                this.add(correctAnswerCmbBox, 1, 6);
+            //Create as many textfield as the amount is, add them to a arraylist and to the VBox we just created:
+            for (int i = 0; i < answerAmount; i++) {
+                questionTextField = new TextField();
+                answersList.add(questionTextField);
+                multiAnswerBox.getChildren().add(questionTextField);
             }
+
+            //Add relevant components to the gridpane:
+            questionGrid.add(answerLabel, 0, 5);
+            questionGrid.add(multiAnswerBox, 1, 5);
+            questionGrid.add(correctAnswerLabel, 0, 6);
+            questionGrid.add(correctAnswerCmbBox, 1, 6);
+
         });
 
         //Listener for choosing the right answer:
@@ -168,8 +216,10 @@ public class AddTest extends GridPane{
 
             //If the value is not null, show save question-button:
             if (correctAnswerCmbBox.getValue() != null) {
-                this.getChildren().remove(buttonHbox);
-                this.add(buttonHbox, 1, 7);
+                questionGrid.getChildren().remove(saveQuestionBtn);
+                questionGrid.add(scoreLabel,0,7);
+                questionGrid.add(scoreTextField,1,7);
+                questionGrid.add(saveQuestionBtn, 1, 8);
             }
         });
 
@@ -184,35 +234,35 @@ public class AddTest extends GridPane{
             //If it is a multi answer-question:
             if (multiAnswerRb.isSelected()){
                 //Remove all the old components and add the right ones:
-                this.getChildren().removeAll(answerLabel, answersAmountLabel, answersAmountCmbBox, answerTextArea, buttonHbox, multiAnswerBox, correctAnswerCmbBox, correctAnswerLabel);
+                questionGrid.getChildren().remove(saveQuestionBtn);
 
-                this.add(answersAmountLabel,0,4);
-                this.add(answersAmountCmbBox,1,4);
+                Event.fireEvent(multiAnswerRb, new ActionEvent());
 
             }
 
             clearForm();
 
         });
+
+        proceedBtn.setOnAction(event -> {
+            testNameTextField.setDisable(true);
+            subjectTextField.setDisable(true);
+            timeTextField.setDisable(true);
+            selfCorrectingBox.setDisable(true);
+            proceedBtn.setDisable(true);
+
+            this.setCenter(questionGrid);
+        });
+
     }
 
-
     void clearForm(){
-        answersList.clear();
         questionTextArea.clear();
         answerTextArea.clear();
-        selfCorrectingBox.setDisable(true);
-        answersAmountCmbBox.setValue(0);
         correctAnswerCmbBox.setValue(null);
-
-
-
     }
 
     public void createTestBtnListener (EventHandler<ActionEvent> buttonListener){
         createTestBtn.setOnAction(buttonListener);
     }
-
-
-
 }

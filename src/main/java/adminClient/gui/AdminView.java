@@ -4,9 +4,9 @@ package adminClient.gui;
  * The GUI for the administrator.
  */
 
-import adminClient.beans.StudentClass;
+import adminClient.beans.NewtonClass;
+import adminClient.beans.Student;
 import adminClient.beans.Test;
-import adminClient.beans.User;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -209,8 +209,8 @@ public class AdminView {
      * Get the selected user from the tableview.
      * @return = the selected user as a "User"-object.
      */
-    public User getSelectedUser(){
-        User selectedUser = (User) userTableView.getSelectionModel().getSelectedItem();
+    public Student getSelectedUser(){
+        Student selectedUser = (Student) userTableView.getSelectionModel().getSelectedItem();
         return selectedUser;
     }
 
@@ -238,7 +238,7 @@ public class AdminView {
     public void clearAddClassTextField(){
         addStudentClass.clearTextFields();
     }
-    public StudentClass getSelectedClass(){
+    public NewtonClass getSelectedClass(){
         return addUser.getSelectedClass();
     }
 
