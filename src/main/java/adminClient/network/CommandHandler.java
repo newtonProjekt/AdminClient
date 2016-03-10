@@ -2,6 +2,7 @@ package adminClient.network;
 
 import adminClient.AdminController;
 import adminClient.beans.Message;
+import adminClient.beans.SchoolTest;
 import com.google.gson.Gson;
 
 import java.util.List;
@@ -40,12 +41,12 @@ public class CommandHandler {
 
             case "getalltests":
                 System.out.println("Hej?");
-                cmdData.forEach(test -> {
-//                    SchoolTest schoolTest = gson.fromJson(test, SchoolTest.class);
-                    System.out.println(test+"\n");
-                    //adminController.addTest(schoolTest);
+                SchoolTest[] tests = gson.fromJson(cmdData.get(0),SchoolTest[].class);
 
-                });
+                for (int i = 0; i < tests.length; i++) {
+                    adminController.addTest(tests[i]);
+                }
+
                 break;
 
 
