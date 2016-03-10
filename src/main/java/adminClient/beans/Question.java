@@ -1,5 +1,7 @@
 package adminClient.beans;
 
+import javafx.scene.image.Image;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,7 +15,10 @@ public class Question {
 	private int id;
 	private boolean multiQuestion;
 	private int points;
+	private boolean vgQuestion;
 	private String questionText;
+	private String questionImage;
+	private Image questionImageFile;
 	private List<Answer> answers;
 	
 	public Question(){

@@ -108,7 +108,7 @@ public class AddTest extends BorderPane{
         testNameTextField.setMinWidth(400);
         subjectTextField.setMinWidth(400);
         timeTextField.setMaxWidth(50);
-        scoreTextField.setMaxWidth(50);
+        scoreTextField.setMaxWidth(40);
 
         //Add components to test-gridpane:
         testGrid.add(testHeader,1,0);

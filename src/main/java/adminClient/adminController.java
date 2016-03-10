@@ -5,9 +5,9 @@ package adminClient;
  */
 
 import adminClient.beans.Login;
-import adminClient.beans.StudentClass;
+import adminClient.beans.NewtonClass;
+import adminClient.beans.Student;
 import adminClient.beans.Test;
-import adminClient.beans.User;
 import adminClient.gui.AdminView;
 import adminClient.gui.LoginBox;
 import adminClient.gui.TestTable;
@@ -30,11 +30,11 @@ public class AdminController extends Application{
     private LoginBox loginBox;
 
     //Components for tables:
-    private TableView<User> userTableView = new UserTable();
+    private TableView<Student> userTableView = new UserTable();
     private TableView<Test> testTableView = new TestTable();
     private ObservableList<Test> testObservableList = FXCollections.observableArrayList();
-    private ObservableList<User> userObservableList = FXCollections.observableArrayList();
-    private ObservableList<StudentClass> studentClassObservableList = FXCollections.observableArrayList();
+    private ObservableList<Student> userObservableList = FXCollections.observableArrayList();
+    private ObservableList<NewtonClass> studentClassObservableList = FXCollections.observableArrayList();
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -48,7 +48,7 @@ public class AdminController extends Application{
         });
 
         //Show the loginbox and wait for action:
-        loginBox.showAndWait();
+        //loginBox.showAndWait();
 
         //If the login goes well, proceed building the rest of the application:
         view = new AdminView(primaryStage);
@@ -69,8 +69,8 @@ public class AdminController extends Application{
 
         //ADD CLASS
         view.addClassBtnListener(event1 -> {
-            String studentClass = view.getStudentClass();
-            studentClassObservableList.add(new StudentClass(studentClass));
+            String newtonClass = view.getStudentClass();
+            studentClassObservableList.add(new NewtonClass(newtonClass));
             view.clearAddClassTextField();
         });
 
@@ -79,10 +79,10 @@ public class AdminController extends Application{
         view.addUserBtnListener(event -> {
             String fName = view.getFname();
             String lName = view.getLname();
-            String pNumb = view.getPnumb();
-            StudentClass studentClass = view.getSelectedClass();
+            long pNumb = Long.parseLong(view.getPnumb());
+            NewtonClass newtonClass = view.getSelectedClass();
 
-            userObservableList.add(new User(pNumb,fName,lName,studentClass));
+            userObservableList.add(new Student(pNumb,fName,lName,newtonClass));
 
             view.clearAddUserTextFields();
         });
@@ -94,10 +94,9 @@ public class AdminController extends Application{
         view.deleteUserBtnListener(event -> userObservableList.remove(view.getSelectedUser()));
 
         //IF CLASSLIST CHANGED, UPDATE COMBOBOX:
-        studentClassObservableList.addListener((ListChangeListener<StudentClass>) c -> {
+        studentClassObservableList.addListener((ListChangeListener<NewtonClass>) c -> {
             view.addUserComboBox(studentClassObservableList);
         });
-
 
         //--------------------------------------------------------------------------------------------------------------
     }
