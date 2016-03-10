@@ -155,7 +155,7 @@ public class AdminController extends Application{
             view.initSaveQuestionBtn();
 
            // System.out.println(schoolTest);
-            //commandHandler.send("puttest",schoolTest);
+            commandHandler.send("puttest",schoolTest);
         });
 
     }
@@ -166,7 +166,7 @@ public class AdminController extends Application{
 
         if (username.equals("admin") && password.equals("admin")){
             //Create a login-bean:
-            Login userLogin = new Login(username,password);
+            Login userLogin = new Login("0",password);
             //Send it to the commandhandler:
             commandHandler.send("login",userLogin);
             //Close the loginbox:
