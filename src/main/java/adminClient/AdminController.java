@@ -13,6 +13,7 @@ import adminClient.gui.LoginBox;
 import adminClient.gui.TestTable;
 import adminClient.gui.UserTable;
 import adminClient.network.CommandHandler;
+import adminClient.network.NetworkConnection;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
@@ -41,6 +42,10 @@ public class AdminController extends Application{
         //Create objects of a CommandHandler and a LoginBox:
 
         commandHandler = new CommandHandler();
+        NetworkConnection networkConnection = new NetworkConnection("127.0.0.1",3004,commandHandler);
+        commandHandler.registerServer(networkConnection);
+        Thread networkThread = new Thread(networkConnection);
+        networkThread.start();
 
         loginBox = new LoginBox();
 

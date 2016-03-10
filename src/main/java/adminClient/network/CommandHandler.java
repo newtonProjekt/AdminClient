@@ -22,6 +22,10 @@ public class CommandHandler {
         gson = new Gson();
     }
 
+    public void registerServer(NetworkConnection server){
+        this.server = server;
+    }
+
     public <T> void send(String cmd, T cmdData) {
         Message currMessage = new Message(cmd, cmdData);
         server.send(gson.toJson(currMessage));
