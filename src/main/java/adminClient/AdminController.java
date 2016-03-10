@@ -101,6 +101,7 @@ public class AdminController extends Application{
             }
 
             commandHandler.send("putstudent",student);
+            studentObservableList.add(student);
 
             view.clearAddUserTextFields();
         });
