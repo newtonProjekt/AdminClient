@@ -13,16 +13,34 @@ public class SchoolTest {
 	private String name;
 	private String subject;
     private int testTime;
+    private String dateCreated;
     private List<Question> questions;
-	
-	public SchoolTest(){
-		questions = new ArrayList<Question>();
-	}
 
-	public SchoolTest(String subject){
-		this.subject = subject;
-		questions = new ArrayList<Question>();
-	}
+    public SchoolTest(String name, String subject, int testTime) {
+        questions = new ArrayList<>();
+
+        this.name = name;
+        this.subject = subject;
+        this.testTime = testTime;
+    }
+
+
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getSubject() {
+        return subject;
+    }
+
+    public void setSubject(String subject) {
+        this.subject = subject;
+    }
 
     public int getTestTime() {
         return testTime;
@@ -32,35 +50,5 @@ public class SchoolTest {
         this.testTime = testTime;
     }
 
-    public int getId() {
-		return id;
-	}
 
-	public void setId(int id) {
-		this.id = id;
-	}
-
-	public String getSubject() {
-		return subject;
-	}
-
-	public void setSubject(String subject) {
-		this.subject = subject;
-	}
-
-	public List<Question> getQuestions() {
-		return questions;
-	}
-
-	public void setQuestions(List<Question> questions) {
-		this.questions = questions;
-	}
-
-	public void addQuestion(Question currQuestion){
-		questions.add(currQuestion);
-	}
-
-	public void removeQuestion(Question currQuestion){
-		questions.remove(currQuestion);
-	}
 }

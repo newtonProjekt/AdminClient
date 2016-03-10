@@ -62,6 +62,10 @@ public class AddTest extends BorderPane{
     private Button createTestBtn = new Button("Skapa prov");
     private ColumnConstraints column1 = new ColumnConstraints();
     private int answerAmount;
+    private ToggleGroup answerRbGroup = new ToggleGroup();
+    private RadioButton gAnswerRb = new RadioButton("G");
+    private RadioButton vgAnswerRb = new RadioButton("VG");
+    private HBox answerHBox = new HBox(10);
 
     public AddTest() {
 
@@ -92,9 +96,13 @@ public class AddTest extends BorderPane{
         testHeader.setFont(Font.font("Tahoma", FontWeight.NORMAL, 15));
         textAnswerRb.setToggleGroup(rbGroup);
         multiAnswerRb.setToggleGroup(rbGroup);
+        gAnswerRb.setToggleGroup(answerRbGroup);
+        vgAnswerRb.setToggleGroup(answerRbGroup);
+        gAnswerRb.setSelected(true);
         textAnswerRb.setSelected(true);
         radioButtonBox.getChildren().addAll(textAnswerRb,multiAnswerRb);
         bottomBtnHbox.getChildren().addAll(startOverBtn, createTestBtn);
+        answerHBox.getChildren().addAll(scoreTextField,gAnswerRb,vgAnswerRb);
         questionTextArea.setPrefHeight(400);
         questionTextArea.setMinHeight(100);
         answerTextArea.setPrefHeight(400);
@@ -131,8 +139,8 @@ public class AddTest extends BorderPane{
         questionGrid.add(answerLabel,0,3);
         questionGrid.add(answerTextArea,1,3);
         questionGrid.add(scoreLabel,0,5);
-        questionGrid.add(scoreTextField,1,5);
-        questionGrid.add(saveQuestionBtn,1,6);
+        questionGrid.add(answerHBox,1,5);
+        questionGrid.add(saveQuestionBtn,1,7);
 
         //Listener for "Selfcorrecting test-checkbox":
         selfCorrectingBox.selectedProperty().addListener((observable, oldValue, newValue) -> {
@@ -151,7 +159,7 @@ public class AddTest extends BorderPane{
         multiAnswerRb.setOnAction(event -> {
 
             //Remove all the old components and add the right ones:
-            questionGrid.getChildren().removeAll(scoreLabel, scoreTextField, answerLabel,answerTextArea,saveQuestionBtn,answersAmountLabel,answersAmountCmbBox);
+            questionGrid.getChildren().removeAll(answerHBox, scoreLabel, answerLabel,answerTextArea,saveQuestionBtn,answersAmountLabel,answersAmountCmbBox);
 
             questionGrid.add(answersAmountLabel,0,4);
             questionGrid.add(answersAmountCmbBox,1,4);
@@ -163,11 +171,11 @@ public class AddTest extends BorderPane{
         textAnswerRb.setOnAction(event -> {
 
             //Remove all the old components and add the right ones:
-            questionGrid.getChildren().removeAll(scoreLabel, scoreTextField, answerLabel, answerTextArea, saveQuestionBtn, multiAnswerBox, correctAnswerCmbBox, answersAmountLabel, correctAnswerLabel, answersAmountCmbBox);
+            questionGrid.getChildren().removeAll(answerHBox, scoreLabel, answerLabel, answerTextArea, saveQuestionBtn, multiAnswerBox, correctAnswerCmbBox, answersAmountLabel, correctAnswerLabel, answersAmountCmbBox);
             questionGrid.add(answerLabel,0,4);
             questionGrid.add(answerTextArea,1,4);
             questionGrid.add(scoreLabel,0,5);
-            questionGrid.add(scoreTextField,1,5);
+            questionGrid.add(answerHBox,1,5);
             questionGrid.add(saveQuestionBtn,1,6);
         });
 
@@ -218,7 +226,7 @@ public class AddTest extends BorderPane{
             if (correctAnswerCmbBox.getValue() != null) {
                 questionGrid.getChildren().remove(saveQuestionBtn);
                 questionGrid.add(scoreLabel,0,7);
-                questionGrid.add(scoreTextField,1,7);
+                questionGrid.add(answerHBox,1,7);
                 questionGrid.add(saveQuestionBtn, 1, 8);
             }
         });
@@ -244,15 +252,7 @@ public class AddTest extends BorderPane{
 
         });
 
-        proceedBtn.setOnAction(event -> {
-            testNameTextField.setDisable(true);
-            subjectTextField.setDisable(true);
-            timeTextField.setDisable(true);
-            selfCorrectingBox.setDisable(true);
-            proceedBtn.setDisable(true);
 
-            this.setCenter(questionGrid);
-        });
 
     }
 
@@ -261,6 +261,33 @@ public class AddTest extends BorderPane{
         answerTextArea.clear();
         correctAnswerCmbBox.setValue(null);
     }
+
+    public void initProceedBtn(){
+        testNameTextField.setDisable(true);
+        subjectTextField.setDisable(true);
+        timeTextField.setDisable(true);
+        selfCorrectingBox.setDisable(true);
+        proceedBtn.setDisable(true);
+        this.setCenter(questionGrid);
+
+    }
+
+    //Proceed-function:
+    public void proceedBtnListener (EventHandler<ActionEvent> buttonListener){
+        proceedBtn.setOnAction(buttonListener);
+    }
+    public String getTestName(){
+        return testNameTextField.getText();
+    }
+    public String getSubject(){
+        return subjectTextField.getText();
+    }
+    public int getTestTime(){
+        return Integer.parseInt(timeTextField.getText());
+    }
+
+
+
 
     public void createTestBtnListener (EventHandler<ActionEvent> buttonListener){
         createTestBtn.setOnAction(buttonListener);

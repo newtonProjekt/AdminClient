@@ -5,8 +5,8 @@ package adminClient.gui;
  */
 
 import adminClient.beans.NewtonClass;
+import adminClient.beans.SchoolTest;
 import adminClient.beans.Student;
-import adminClient.beans.Test;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -200,8 +200,8 @@ public class AdminView {
      * Get the selected test from the tableview.
      * @return = the selected test as a "Test"-object.
      */
-    public Test getSelectedTest(){
-        Test selectedTest = (Test) testTableView.getSelectionModel().getSelectedItem();
+    public SchoolTest getSelectedTest(){
+        SchoolTest selectedTest = (SchoolTest) testTableView.getSelectionModel().getSelectedItem();
         return selectedTest;
     }
 
@@ -241,6 +241,18 @@ public class AdminView {
     public NewtonClass getSelectedClass(){
         return addUser.getSelectedClass();
     }
+    public void initProceedBtn(){
+        addTest.initProceedBtn();
+    }
+    public String getTestName(){
+        return addTest.getTestName();
+    }
+    public String getSubjectName(){
+        return addTest.getSubject();
+    }
+    public int getTestTime(){
+        return addTest.getTestTime();
+    }
 
 
     /**
@@ -266,5 +278,8 @@ public class AdminView {
     }
     public void addClassBtnListener(EventHandler<ActionEvent> listener){
         addStudentClass.addClassButtonListener(listener);
+    }
+    public void proceedBtnListener(EventHandler<ActionEvent> listener){
+        addTest.proceedBtnListener(listener);
     }
 }

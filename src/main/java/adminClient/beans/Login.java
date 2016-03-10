@@ -7,10 +7,6 @@ public class Login {
 
     private String loginId, password;
 
-    public Login(){
-
-    }
-
     public Login(String loginId, String password){
         this.loginId = loginId;
         this.password = password;

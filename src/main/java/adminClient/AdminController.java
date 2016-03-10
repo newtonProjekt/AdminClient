@@ -6,8 +6,8 @@ package adminClient;
 
 import adminClient.beans.Login;
 import adminClient.beans.NewtonClass;
+import adminClient.beans.SchoolTest;
 import adminClient.beans.Student;
-import adminClient.beans.Test;
 import adminClient.gui.AdminView;
 import adminClient.gui.LoginBox;
 import adminClient.gui.TestTable;
@@ -31,9 +31,9 @@ public class AdminController extends Application{
 
     //Components for tables:
     private TableView<Student> userTableView = new UserTable();
-    private TableView<Test> testTableView = new TestTable();
-    private ObservableList<Test> testObservableList = FXCollections.observableArrayList();
-    private ObservableList<Student> userObservableList = FXCollections.observableArrayList();
+    private TableView<SchoolTest> testTableView = new TestTable();
+    private ObservableList<SchoolTest> testObservableList = FXCollections.observableArrayList();
+    private ObservableList<Student> studentObservableList = FXCollections.observableArrayList();
     private ObservableList<NewtonClass> studentClassObservableList = FXCollections.observableArrayList();
 
     @Override
@@ -58,14 +58,14 @@ public class AdminController extends Application{
         view.setUserTableView(userTableView);
         view.setTestTableView(testTableView);
         testTableView.setItems(testObservableList);
-        userTableView.setItems(userObservableList);
+        userTableView.setItems(studentObservableList);
 
         // TEST_AREA ---------------------------------------------------------------------------------------------------
 
         testObservableList.addAll(
-                new Test("Delprov 1, JavaFX","Utveckling av desktopapplikationer","2016-01-28"),
-                new Test("Delprov 2, JavaEE","Utveckling av desktopapplikationer","2016-02-15"),
-                new Test("Delprov 1, HTML och CSS","Utveckling av webbapplikationer","2016-03-03")
+                new SchoolTest("Delprov 1, JavaFX","Utveckling av desktopapplikationer",120),
+                new SchoolTest("Delprov 2, JavaEE","Utveckling av desktopapplikationer",120),
+                new SchoolTest("Delprov 1, HTML och CSS","Utveckling av webbapplikationer",120)
         );
 
 
@@ -84,7 +84,7 @@ public class AdminController extends Application{
             long pNumb = Long.parseLong(view.getPnumb());
             NewtonClass newtonClass = view.getSelectedClass();
 
-            userObservableList.add(new Student(pNumb,fName,lName,newtonClass));
+            studentObservableList.add(new Student(pNumb,fName,lName,newtonClass));
 
             view.clearAddUserTextFields();
         });
@@ -93,7 +93,7 @@ public class AdminController extends Application{
         view.deleteTestBtnListener(event -> testObservableList.remove(view.getSelectedTest()));
 
         //DELETE USER
-        view.deleteUserBtnListener(event -> userObservableList.remove(view.getSelectedUser()));
+        view.deleteUserBtnListener(event -> studentObservableList.remove(view.getSelectedUser()));
 
         //IF CLASSLIST CHANGED, UPDATE COMBOBOX:
         studentClassObservableList.addListener((ListChangeListener<NewtonClass>) c -> {
@@ -101,6 +101,23 @@ public class AdminController extends Application{
         });
 
         //--------------------------------------------------------------------------------------------------------------
+
+        //Listener for proceeding when creating a test:
+        view.proceedBtnListener(event -> {
+
+            String testName = view.getTestName();
+            String subjectName = view.getSubjectName();
+            int testTime = view.getTestTime();
+
+            //Create an object of SchoolTest:
+            SchoolTest schoolTest = new SchoolTest(testName,subjectName,testTime);
+
+           // System.out.println(schoolTest);
+            commandHandler.createSchoolTest(schoolTest);
+            view.initProceedBtn();
+
+        });
+
     }
 
     void login(){
@@ -118,7 +135,6 @@ public class AdminController extends Application{
         else {
             loginBox.setErrorLabel("Felaktigt användarnamn eller lösenord.");
         }
-
     }
 
     public static void main(String[] args) {
