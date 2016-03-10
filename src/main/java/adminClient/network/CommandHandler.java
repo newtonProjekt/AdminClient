@@ -1,13 +1,9 @@
 package adminClient.network;
 
-import adminClient.beans.Login;
 import adminClient.beans.Message;
-import adminClient.beans.Student;
 import com.google.gson.Gson;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by Jonas on 2016-03-07.
@@ -27,6 +23,7 @@ public class CommandHandler {
     }
 
     public <T> void send(String cmd, T cmdData) {
+        System.out.println("går du hit ofta?");
         Message currMessage = new Message(cmd, cmdData);
 
         System.out.println(currMessage);

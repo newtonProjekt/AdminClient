@@ -4,10 +4,7 @@ package adminClient;
  * The adminController.
  */
 
-import adminClient.beans.Login;
-import adminClient.beans.NewtonClass;
-import adminClient.beans.SchoolTest;
-import adminClient.beans.Student;
+import adminClient.beans.*;
 import adminClient.gui.AdminView;
 import adminClient.gui.LoginBox;
 import adminClient.gui.TestTable;
@@ -19,7 +16,10 @@ import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+
+import java.util.ArrayList;
 
 /**
  * Created by Jonas on 2016-03-02.
@@ -29,6 +29,7 @@ public class AdminController extends Application{
     private AdminView view;
     private CommandHandler commandHandler;
     private LoginBox loginBox;
+    private SchoolTest schoolTest;
 
     //Components for tables:
     private TableView<Student> userTableView = new UserTable();
@@ -55,7 +56,7 @@ public class AdminController extends Application{
         });
 
         //Show the loginbox and wait for action:
-        //loginBox.showAndWait();
+        loginBox.showAndWait();
 
         //If the login goes well, proceed building the rest of the application:
         view = new AdminView(primaryStage);
@@ -115,13 +116,46 @@ public class AdminController extends Application{
             int testTime = view.getTestTime();
 
             //Create an object of SchoolTest:
-            SchoolTest schoolTest = new SchoolTest(testName,subjectName,testTime);
+            schoolTest = new SchoolTest(testName,subjectName,testTime);
 
-           // System.out.println(schoolTest);
-            commandHandler.send("puttest",schoolTest);
             //commandHandler.createSchoolTest(schoolTest);
             view.initProceedBtn();
 
+        });
+
+        view.saveQuestionBtnListener(event -> {
+            boolean multiQuestion = view.getMultiAnswerSelected();
+            boolean vgQuestion = view.getVgQuestion();
+            int points = view.getQuestionPoint();
+            String questionText = view.getQuestion();
+
+            Question question = new Question(multiQuestion,points,vgQuestion,questionText);
+
+            //If it is a multianswer-question:
+            if (view.getMultiAnswerSelected()){
+                ArrayList<TextField> tempArray = view.getMultiAnswerList();
+
+                tempArray.forEach(answerEvent -> {
+                    //Make objects of all answers:
+                    Answer answer = new Answer(answerEvent.getText());
+
+                    //If the answer equals to the right answer, set boolean to true:
+                    if (view.getCorrectAnswer().equals(answerEvent.getText())){
+                        answer.setCorrectAnswer(true);
+                    }
+
+                    //Add answer to the list in the Question-class:
+                    question.addAnswer(answer);
+
+                });
+            }
+
+            schoolTest.addQuestion(question);
+
+            view.initSaveQuestionBtn();
+
+           // System.out.println(schoolTest);
+            //commandHandler.send("puttest",schoolTest);
         });
 
     }
@@ -134,7 +168,7 @@ public class AdminController extends Application{
             //Create a login-bean:
             Login userLogin = new Login(username,password);
             //Send it to the commandhandler:
-            //commandHandler.createLoginJson(userLogin);
+            commandHandler.send("login",userLogin);
             //Close the loginbox:
             loginBox.close();
         }

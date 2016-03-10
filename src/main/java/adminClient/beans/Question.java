@@ -20,18 +20,25 @@ public class Question {
 	private String questionImage;
 	private Image questionImageFile;
 	private List<Answer> answers;
-	
-	public Question(){
-		answers = new ArrayList<Answer>();
-	}
 
-	public Question(String questionText, int points){
-		this.points = points;
-		this.questionText = questionText;
-		answers = new ArrayList<Answer>();
-	}
+    public Question(boolean multiQuestion, int points, boolean vgQuestion, String questionText) {
+        answers = new ArrayList<>();
 
-	public int getId() {
+        this.multiQuestion = multiQuestion;
+        this.points = points;
+        this.vgQuestion = vgQuestion;
+        this.questionText = questionText;
+    }
+
+    public boolean isVgQuestion() {
+        return vgQuestion;
+    }
+
+    public void setVgQuestion(boolean vgQuestion) {
+        this.vgQuestion = vgQuestion;
+    }
+
+    public int getId() {
 		return id;
 	}
 
@@ -78,5 +85,18 @@ public class Question {
 	public void removeAnswer(Answer currAnswer){
 		answers.remove(currAnswer);
 	}
-	
+
+    @Override
+    public String toString() {
+        return "Question{" +
+                "id=" + id +
+                ", multiQuestion=" + multiQuestion +
+                ", points=" + points +
+                ", vgQuestion=" + vgQuestion +
+                ", questionText='" + questionText + '\'' +
+                ", questionImage='" + questionImage + '\'' +
+                ", questionImageFile=" + questionImageFile +
+                ", answers=" + answers +
+                '}';
+    }
 }

@@ -12,7 +12,8 @@ public class Answer {
 	private String answerText;
 	private boolean correctAnswer;
 	
-	public Answer(){	
+	public Answer(String answerText){
+		this.answerText = answerText;
 	}
 
 	public Answer(String answerText, boolean correctAnswer) {
@@ -43,5 +44,13 @@ public class Answer {
 	public void setCorrectAnswer(boolean correctAnswer) {
 		this.correctAnswer = correctAnswer;
 	}
-	
+
+    @Override
+    public String toString() {
+        return "Answer{" +
+                "id=" + id +
+                ", answerText='" + answerText + '\'' +
+                ", correctAnswer=" + correctAnswer +
+                '}';
+    }
 }

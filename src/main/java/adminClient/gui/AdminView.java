@@ -21,6 +21,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import java.util.ArrayList;
+
 /**
  * Created by Jonas on 2016-03-02.
  */
@@ -254,6 +256,31 @@ public class AdminView {
         return addTest.getTestTime();
     }
 
+    public boolean getMultiAnswerSelected(){
+        return addTest.getMultiAnswerSelected();
+    }
+    public boolean getTextStringSelected(){
+        return addTest.getTextStringSelected();
+    }
+    public String getQuestion(){
+        return addTest.getQuestion();
+    }
+    public ArrayList<TextField> getMultiAnswerList(){
+        return addTest.getMultiAnswerList();
+    }
+    public String getCorrectAnswer(){
+        return addTest.getCorrectAnswer();
+    }
+    public int getQuestionPoint(){
+        return addTest.getQuestionPoint();
+    }
+    public boolean getVgQuestion(){
+        return addTest.getVgQuestion();
+    }
+    public void initSaveQuestionBtn(){
+        addTest.initSaveQuestionBtn();
+    }
+
 
     /**
      * Listeners for the GUI.
@@ -281,5 +308,8 @@ public class AdminView {
     }
     public void proceedBtnListener(EventHandler<ActionEvent> listener){
         addTest.proceedBtnListener(listener);
+    }
+    public void saveQuestionBtnListener(EventHandler<ActionEvent> listener){
+        addTest.saveQuestionBtnListener(listener);
     }
 }

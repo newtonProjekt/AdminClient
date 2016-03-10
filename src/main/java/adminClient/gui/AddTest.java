@@ -47,7 +47,6 @@ public class AddTest extends BorderPane{
     private TextField questionTextField;
     private Label answerFormLbl = new Label("Svarsalternativ");
     private Label answerLabel = new Label("Svar:");
-    private TextArea answerTextArea = new TextArea();
     private HBox radioButtonBox = new HBox(10);
     private ToggleGroup rbGroup = new ToggleGroup();
     private RadioButton textAnswerRb = new RadioButton("Textsvar");
@@ -105,8 +104,6 @@ public class AddTest extends BorderPane{
         answerHBox.getChildren().addAll(scoreTextField,gAnswerRb,vgAnswerRb);
         questionTextArea.setPrefHeight(400);
         questionTextArea.setMinHeight(100);
-        answerTextArea.setPrefHeight(400);
-        answerTextArea.setMinHeight(100);
         answersAmountCmbBox.getItems().addAll(2,3,4,5,6,7,8,9,10);
         answersAmountCmbBox.setValue(3);
         correctAnswerCmbBox.setPromptText("-Välj-");
@@ -136,11 +133,9 @@ public class AddTest extends BorderPane{
         questionGrid.add(answerFormLbl,0,2);
         questionGrid.add(questionTextArea,1,1);
         questionGrid.add(radioButtonBox,1,2);
-        questionGrid.add(answerLabel,0,3);
-        questionGrid.add(answerTextArea,1,3);
-        questionGrid.add(scoreLabel,0,5);
-        questionGrid.add(answerHBox,1,5);
-        questionGrid.add(saveQuestionBtn,1,7);
+        questionGrid.add(scoreLabel,0,4);
+        questionGrid.add(answerHBox,1,4);
+        questionGrid.add(saveQuestionBtn,1,6);
 
         //Listener for "Selfcorrecting test-checkbox":
         selfCorrectingBox.selectedProperty().addListener((observable, oldValue, newValue) -> {
@@ -159,7 +154,7 @@ public class AddTest extends BorderPane{
         multiAnswerRb.setOnAction(event -> {
 
             //Remove all the old components and add the right ones:
-            questionGrid.getChildren().removeAll(answerHBox, scoreLabel, answerLabel,answerTextArea,saveQuestionBtn,answersAmountLabel,answersAmountCmbBox);
+            questionGrid.getChildren().removeAll(answerHBox, scoreLabel, answerLabel,saveQuestionBtn,answersAmountLabel,answersAmountCmbBox);
 
             questionGrid.add(answersAmountLabel,0,4);
             questionGrid.add(answersAmountCmbBox,1,4);
@@ -171,12 +166,10 @@ public class AddTest extends BorderPane{
         textAnswerRb.setOnAction(event -> {
 
             //Remove all the old components and add the right ones:
-            questionGrid.getChildren().removeAll(answerHBox, scoreLabel, answerLabel, answerTextArea, saveQuestionBtn, multiAnswerBox, correctAnswerCmbBox, answersAmountLabel, correctAnswerLabel, answersAmountCmbBox);
-            questionGrid.add(answerLabel,0,4);
-            questionGrid.add(answerTextArea,1,4);
-            questionGrid.add(scoreLabel,0,5);
-            questionGrid.add(answerHBox,1,5);
-            questionGrid.add(saveQuestionBtn,1,6);
+            questionGrid.getChildren().removeAll(answerHBox, scoreLabel, answerLabel, saveQuestionBtn, multiAnswerBox, correctAnswerCmbBox, answersAmountLabel, correctAnswerLabel, answersAmountCmbBox);
+            questionGrid.add(scoreLabel,0,4);
+            questionGrid.add(answerHBox,1,4);
+            questionGrid.add(saveQuestionBtn,1,5);
         });
 
         //Listener for amount of answers in a multi answer-question:
@@ -231,46 +224,15 @@ public class AddTest extends BorderPane{
             }
         });
 
-        //Listener for the "Save question"-button:
-        saveQuestionBtn.setOnAction(event -> {
-
-            //If it is a text-string question:
-            if (textAnswerRb.isSelected()){
-
-            }
-
-            //If it is a multi answer-question:
-            if (multiAnswerRb.isSelected()){
-                //Remove all the old components and add the right ones:
-                questionGrid.getChildren().remove(saveQuestionBtn);
-
-                Event.fireEvent(multiAnswerRb, new ActionEvent());
-
-            }
-
-            clearForm();
-
-        });
-
 
 
     }
 
     void clearForm(){
         questionTextArea.clear();
-        answerTextArea.clear();
         correctAnswerCmbBox.setValue(null);
     }
 
-    public void initProceedBtn(){
-        testNameTextField.setDisable(true);
-        subjectTextField.setDisable(true);
-        timeTextField.setDisable(true);
-        selfCorrectingBox.setDisable(true);
-        proceedBtn.setDisable(true);
-        this.setCenter(questionGrid);
-
-    }
 
     //Proceed-function:
     public void proceedBtnListener (EventHandler<ActionEvent> buttonListener){
@@ -285,9 +247,52 @@ public class AddTest extends BorderPane{
     public int getTestTime(){
         return Integer.parseInt(timeTextField.getText());
     }
+    public void initProceedBtn(){
+        testNameTextField.setDisable(true);
+        subjectTextField.setDisable(true);
+        timeTextField.setDisable(true);
+        selfCorrectingBox.setDisable(true);
+        proceedBtn.setDisable(true);
+        this.setCenter(questionGrid);
 
+    }
 
+    //Save question-function:
+    public void saveQuestionBtnListener (EventHandler<ActionEvent> buttonlistener){
+        saveQuestionBtn.setOnAction(buttonlistener);
+    }
+    public boolean getMultiAnswerSelected(){
+        return multiAnswerRb.isSelected();
+    }
+    public boolean getTextStringSelected(){
+        return textAnswerRb.isSelected();
+    }
+    public String getQuestion(){
+        return questionTextArea.getText();
+    }
+    public ArrayList<TextField> getMultiAnswerList(){
+        return answersList;
+    }
+    public String getCorrectAnswer(){
+        return correctAnswerCmbBox.getSelectionModel().getSelectedItem();
+    }
+    public int getQuestionPoint(){
+        return Integer.parseInt(scoreTextField.getText());
+    }
+    public boolean getVgQuestion(){
+        return vgAnswerRb.isSelected();
+    }
+    public void initSaveQuestionBtn(){
 
+        //If it is a multi answer-question:
+        if (multiAnswerRb.isSelected()){
+            //Remove all the old components and add the right ones:
+            questionGrid.getChildren().remove(saveQuestionBtn);
+            Event.fireEvent(multiAnswerRb, new ActionEvent());
+        }
+
+        clearForm();
+    }
 
     public void createTestBtnListener (EventHandler<ActionEvent> buttonListener){
         createTestBtn.setOnAction(buttonListener);

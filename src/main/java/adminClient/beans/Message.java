@@ -8,6 +8,7 @@ import java.util.List;
 /**
  * Created by Johan Lindström (jolindse@hotmail.com) on 2016-03-10.
  */
+
 public class Message<T> {
     private String command;
     private List<String> commandData;

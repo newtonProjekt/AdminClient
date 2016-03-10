@@ -50,5 +50,23 @@ public class SchoolTest {
         this.testTime = testTime;
     }
 
+    public void addQuestion (Question question){
+        questions.add(question);
+    }
 
+    public void removeQuestion (Question question){
+        questions.remove(question);
+    }
+
+    @Override
+    public String toString() {
+        return "SchoolTest{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", subject='" + subject + '\'' +
+                ", testTime=" + testTime +
+                ", dateCreated='" + dateCreated + '\'' +
+                ", questions=" + questions +
+                '}';
+    }
 }
