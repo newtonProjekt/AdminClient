@@ -39,7 +39,9 @@ public class AdminController extends Application{
     @Override
     public void start(Stage primaryStage) throws Exception {
         //Create objects of a CommandHandler and a LoginBox:
+
         commandHandler = new CommandHandler();
+
         loginBox = new LoginBox();
 
         //Start listening for actions on the loginbutton:
@@ -109,7 +111,7 @@ public class AdminController extends Application{
             //Create a login-bean:
             Login userLogin = new Login(username,password);
             //Send it to the commandhandler:
-            commandHandler.createLoginJson(userLogin);
+            //commandHandler.createLoginJson(userLogin);
             //Close the loginbox:
             loginBox.close();
         }

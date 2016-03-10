@@ -10,7 +10,8 @@ import java.util.List;
 public class SchoolTest {
 
 	private int id;
-	private String type;
+	private String name;
+	private String subject;
     private int testTime;
     private List<Question> questions;
 	
@@ -18,8 +19,8 @@ public class SchoolTest {
 		questions = new ArrayList<Question>();
 	}
 
-	public SchoolTest(String type){
-		this.type = type;
+	public SchoolTest(String subject){
+		this.subject = subject;
 		questions = new ArrayList<Question>();
 	}
 
@@ -39,12 +40,12 @@ public class SchoolTest {
 		this.id = id;
 	}
 
-	public String getType() {
-		return type;
+	public String getSubject() {
+		return subject;
 	}
 
-	public void setType(String type) {
-		this.type = type;
+	public void setSubject(String subject) {
+		this.subject = subject;
 	}
 
 	public List<Question> getQuestions() {
