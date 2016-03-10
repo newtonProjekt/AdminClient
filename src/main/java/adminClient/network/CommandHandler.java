@@ -28,6 +28,8 @@ public class CommandHandler {
 
     public <T> void send(String cmd, T cmdData) {
         Message currMessage = new Message(cmd, cmdData);
+
+        System.out.println(currMessage);
         server.send(gson.toJson(currMessage));
     }
 

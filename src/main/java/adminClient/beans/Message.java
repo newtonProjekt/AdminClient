@@ -49,4 +49,12 @@ public class Message<T> {
         String cmdData = gson.toJson(currData);
         commandData.add(cmdData);
     }
+
+    @Override
+    public String toString() {
+        return "Message{" +
+                "command='" + command + '\'' +
+                ", commandData=" + commandData +
+                '}';
+    }
 }

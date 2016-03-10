@@ -118,7 +118,8 @@ public class AdminController extends Application{
             SchoolTest schoolTest = new SchoolTest(testName,subjectName,testTime);
 
            // System.out.println(schoolTest);
-            commandHandler.createSchoolTest(schoolTest);
+            commandHandler.send("puttest",schoolTest);
+            //commandHandler.createSchoolTest(schoolTest);
             view.initProceedBtn();
 
         });
