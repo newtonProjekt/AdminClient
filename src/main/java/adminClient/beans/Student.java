@@ -30,13 +30,12 @@ public class Student {
 	 * @param firstName String
 	 * @param surName String
      */
-	public Student(long persNumber, String firstName, String surName, NewtonClass newtonClass){
+	public Student(long persNumber, String firstName, String surName){
 		answersSubmited = new ArrayList<AnswerSubmited>();
 		testsToTake = new ArrayList<>();
 		this.persNumber = persNumber;
 		this.firstName = firstName;
 		this.surName = surName;
-        this.newtonClass = newtonClass;
 		password = "password";
 	}
 

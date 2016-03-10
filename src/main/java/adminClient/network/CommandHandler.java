@@ -1,5 +1,6 @@
 package adminClient.network;
 
+import adminClient.AdminController;
 import adminClient.beans.Message;
 import com.google.gson.Gson;
 
@@ -13,8 +14,10 @@ public class CommandHandler {
 
     private Gson gson = new Gson();
     private NetworkConnection server;
+    private AdminController adminController;
 
-    public CommandHandler() {
+    public CommandHandler(AdminController adminController) {
+        this.adminController = adminController;
         gson = new Gson();
     }
 
@@ -23,7 +26,6 @@ public class CommandHandler {
     }
 
     public <T> void send(String cmd, T cmdData) {
-        System.out.println("går du hit ofta?");
         Message currMessage = new Message(cmd, cmdData);
 
         System.out.println(currMessage);
@@ -35,6 +37,18 @@ public class CommandHandler {
         List<String> cmdData = currMessage.getCommandData();
 
         switch (currMessage.getCommand()) {
+
+            case "getalltests":
+                System.out.println("Hej?");
+                cmdData.forEach(test -> {
+//                    SchoolTest schoolTest = gson.fromJson(test, SchoolTest.class);
+                    System.out.println(test+"\n");
+                    //adminController.addTest(schoolTest);
+
+                });
+                break;
+
+
 
         }
     }

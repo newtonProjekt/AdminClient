@@ -30,6 +30,7 @@ public class AdminController extends Application{
     private CommandHandler commandHandler;
     private LoginBox loginBox;
     private SchoolTest schoolTest;
+    private Student student;
 
     //Components for tables:
     private TableView<Student> userTableView = new UserTable();
@@ -42,7 +43,7 @@ public class AdminController extends Application{
     public void start(Stage primaryStage) throws Exception {
         //Create objects of a CommandHandler and a LoginBox:
 
-        commandHandler = new CommandHandler();
+        commandHandler = new CommandHandler(this);
         NetworkConnection networkConnection = new NetworkConnection("127.0.0.1",3004,commandHandler);
         commandHandler.registerServer(networkConnection);
         Thread networkThread = new Thread(networkConnection);
@@ -82,15 +83,24 @@ public class AdminController extends Application{
             view.clearAddClassTextField();
         });
 
-
         //ADD USER:
         view.addUserBtnListener(event -> {
             String fName = view.getFname();
             String lName = view.getLname();
             long pNumb = Long.parseLong(view.getPnumb());
-            NewtonClass newtonClass = view.getSelectedClass();
 
-            studentObservableList.add(new Student(pNumb,fName,lName,newtonClass));
+            student = new Student(pNumb,fName,lName);
+
+            if (view.getSelectedClass() != null) {
+                NewtonClass newtonClass = view.getSelectedClass();
+
+                commandHandler.send("putnewtonclass",newtonClass);
+                studentClassObservableList.add(newtonClass);
+
+                student.setNewtonClass(newtonClass);
+            }
+
+            commandHandler.send("putstudent",student);
 
             view.clearAddUserTextFields();
         });
@@ -154,8 +164,13 @@ public class AdminController extends Application{
 
             view.initSaveQuestionBtn();
 
-           // System.out.println(schoolTest);
+        });
+
+        view.createTestBtnListener(event -> {
             commandHandler.send("puttest",schoolTest);
+
+            commandHandler.send("getalltests","");
+
         });
 
     }
@@ -175,6 +190,10 @@ public class AdminController extends Application{
         else {
             loginBox.setErrorLabel("Felaktigt användarnamn eller lösenord.");
         }
+    }
+
+    public void addTest(SchoolTest schoolTest){
+        testObservableList.add(schoolTest);
     }
 
     public static void main(String[] args) {

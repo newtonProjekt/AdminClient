@@ -259,9 +259,6 @@ public class AdminView {
     public boolean getMultiAnswerSelected(){
         return addTest.getMultiAnswerSelected();
     }
-    public boolean getTextStringSelected(){
-        return addTest.getTextStringSelected();
-    }
     public String getQuestion(){
         return addTest.getQuestion();
     }
@@ -311,5 +308,8 @@ public class AdminView {
     }
     public void saveQuestionBtnListener(EventHandler<ActionEvent> listener){
         addTest.saveQuestionBtnListener(listener);
+    }
+    public void createTestBtnListener(EventHandler<ActionEvent> listener){
+        addTest.createTestBtnListener(listener);
     }
 }
