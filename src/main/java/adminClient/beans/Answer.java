@@ -8,7 +8,7 @@ package adminClient.beans;
 
 public class Answer {
 
-	private int id;
+	private Integer id;
 	private String answerText;
 	private boolean correctAnswer;
 	

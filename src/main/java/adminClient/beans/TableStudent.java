@@ -9,17 +9,18 @@ import java.util.List;
  * Contains login (personal number), name, password and the answers student has submitted to questions.
  */
 
-public class Student {
+public class TableStudent {
 
 	private long persNumber;
 	private String firstName;
 	private String surName;
 	private String password;
+	private String newtonClass;
     private int newtonClassId;
 	private List<AnswerSubmited> answersSubmited;
 	private List<SchoolTest> testsToTake;
 
-	public Student(){
+	public TableStudent(){
 		answersSubmited = new ArrayList<AnswerSubmited>();
 	}
 
@@ -30,7 +31,7 @@ public class Student {
 	 * @param firstName String
 	 * @param surName String
      */
-	public Student(long persNumber, String firstName, String surName){
+	public TableStudent(long persNumber, String firstName, String surName){
 		answersSubmited = new ArrayList<AnswerSubmited>();
 		testsToTake = new ArrayList<>();
 		this.persNumber = persNumber;
@@ -47,7 +48,7 @@ public class Student {
 	 * @param surName String
 	 * @param password String
      */
-	public Student(long persNumber, String firstName, String surName, String password) {
+	public TableStudent(long persNumber, String firstName, String surName, String password) {
 		answersSubmited = new ArrayList<AnswerSubmited>();
 		testsToTake = new ArrayList<>();
 		this.persNumber = persNumber;
@@ -59,7 +60,15 @@ public class Student {
 	// Getters and setters
 
 
-	public int getNewtonClassId() {
+    public String getNewtonClass() {
+        return newtonClass;
+    }
+
+    public void setNewtonClass(String newtonClass) {
+        this.newtonClass = newtonClass;
+    }
+
+    public int getNewtonClassId() {
 		return newtonClassId;
 	}
 

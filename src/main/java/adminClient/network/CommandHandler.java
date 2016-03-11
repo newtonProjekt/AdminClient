@@ -1,8 +1,7 @@
 package adminClient.network;
 
 import adminClient.AdminController;
-import adminClient.beans.Message;
-import adminClient.beans.SchoolTest;
+import adminClient.beans.*;
 import com.google.gson.Gson;
 
 import java.util.List;
@@ -40,18 +39,39 @@ public class CommandHandler {
         switch (currMessage.getCommand()) {
 
             case "getalltests":
-                System.out.println("Hej?");
                 SchoolTest[] tests = gson.fromJson(cmdData.get(0),SchoolTest[].class);
 
+                adminController.clearTestList();
                 for (int i = 0; i < tests.length; i++) {
                     adminController.addTest(tests[i]);
                 }
 
                 break;
 
+            case "getallstudents":
+                TableStudent[] students = gson.fromJson(cmdData.get(0),TableStudent[].class);
+
+                adminController.clearStudentList();
+                for (int i = 0; i < students.length; i++) {
+                    adminController.addStudent(students[i]);
+                }
+
+                break;
+
+            case "getallstudentclasses":
+                NewtonClass[] newtonClasses = gson.fromJson(cmdData.get(0),NewtonClass[].class);
+
+                adminController.clearClassList();
+                for (int i = 0; i < newtonClasses.length; i++) {
+                    adminController.addNewtonClass(newtonClasses[i]);
+                }
 
 
         }
+    }
+
+    public void disconnectServer(){
+        server.disconnectServer();
     }
 }
 

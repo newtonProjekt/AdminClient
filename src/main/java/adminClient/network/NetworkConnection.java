@@ -36,7 +36,6 @@ public class NetworkConnection implements Runnable {
                 Scanner sc = new Scanner(server.getInputStream());
 
                 while (sc.hasNextLine()) {
-                    System.out.println("i while-loop nr 2");
                     commandHandler.parse(sc.nextLine());
                     }
 

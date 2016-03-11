@@ -44,6 +44,7 @@ public class AdminView {
     private Button editTestBtn = new Button("Redigera prov");
     private Button deleteTestBtn = new Button("Radera prov");
     private Button statTestBtn = new Button("Statistik");
+    private Button shareTestBtn = new Button("Dela prov");
     private Button editUserBtn = new Button("Redigera användare");
     private Button deleteUserBtn = new Button("Radera användare");
     //Tabs:
@@ -119,7 +120,7 @@ public class AdminView {
         createTestScrollPane.setContent(addTest);
 
         //Add the test-buttons to the H-box 'handleTestButtons'.
-        handleTestButtons.getChildren().addAll(editTestBtn, deleteTestBtn, statTestBtn);
+        handleTestButtons.getChildren().addAll(editTestBtn, deleteTestBtn, statTestBtn, shareTestBtn);
 
         //Add the user-buttons to the H-box 'handleUserButtons'.
         handleUserButtons.getChildren().addAll(editUserBtn, deleteUserBtn);
@@ -216,6 +217,11 @@ public class AdminView {
         return selectedUser;
     }
 
+    public void startOverTest(){
+        AddTest addTest = new AddTest();
+        createTestScrollPane.setContent(addTest);
+    }
+
     /**
      * Getters & Setters from the "AddUser"-class, called from the AdminController-class.
      */
@@ -243,6 +249,8 @@ public class AdminView {
     public NewtonClass getSelectedClass(){
         return addUser.getSelectedClass();
     }
+
+    //add test
     public void initProceedBtn(){
         addTest.initProceedBtn();
     }
@@ -255,7 +263,6 @@ public class AdminView {
     public int getTestTime(){
         return addTest.getTestTime();
     }
-
     public boolean getMultiAnswerSelected(){
         return addTest.getMultiAnswerSelected();
     }
@@ -311,5 +318,8 @@ public class AdminView {
     }
     public void createTestBtnListener(EventHandler<ActionEvent> listener){
         addTest.createTestBtnListener(listener);
+    }
+    public void startOverBtnListener(EventHandler<ActionEvent> listener){
+        addTest.startOverBtnListener(listener);
     }
 }

@@ -12,6 +12,7 @@ import adminClient.gui.UserTable;
 import adminClient.network.CommandHandler;
 import adminClient.network.NetworkConnection;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -33,21 +34,29 @@ public class AdminController extends Application{
     private Student student;
 
     //Components for tables:
-    private TableView<Student> userTableView = new UserTable();
+    private TableView<TableStudent> userTableView = new UserTable();
     private TableView<SchoolTest> testTableView = new TestTable();
     private ObservableList<SchoolTest> testObservableList = FXCollections.observableArrayList();
-    private ObservableList<Student> studentObservableList = FXCollections.observableArrayList();
+    private ObservableList<TableStudent> studentObservableList = FXCollections.observableArrayList();
     private ObservableList<NewtonClass> studentClassObservableList = FXCollections.observableArrayList();
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        //Create objects of a CommandHandler and a LoginBox:
 
+        //TODO kunna redigera prov, ny knapp som heter "uppdatera prov".
+        //TODO kunna redigera elev, ändra klass osv
+        //TODO kunna ta bort en klass.
+        //TODO dela prov till elever ELLER klasser, listviews.
+        //TODO delete student, klass och test.
+        //TODO restrict textfields till bara nummer / bokstäver.
+
+        //Create objects of a CommandHandler and a LoginBox:
         commandHandler = new CommandHandler(this);
         NetworkConnection networkConnection = new NetworkConnection("127.0.0.1",3004,commandHandler);
         commandHandler.registerServer(networkConnection);
         Thread networkThread = new Thread(networkConnection);
         networkThread.start();
+
 
         loginBox = new LoginBox();
 
@@ -67,19 +76,26 @@ public class AdminController extends Application{
         testTableView.setItems(testObservableList);
         userTableView.setItems(studentObservableList);
 
+        //Update the lists with current data:
+        commandHandler.send("getalltests","");
+        commandHandler.send("getallstudentclasses","");
+        commandHandler.send("getallstudents","");
+
         // TEST_AREA ---------------------------------------------------------------------------------------------------
 
+/*
         testObservableList.addAll(
                 new SchoolTest("Delprov 1, JavaFX","Utveckling av desktopapplikationer",120),
                 new SchoolTest("Delprov 2, JavaEE","Utveckling av desktopapplikationer",120),
                 new SchoolTest("Delprov 1, HTML och CSS","Utveckling av webbapplikationer",120)
         );
-
+*/
 
         //ADD CLASS
         view.addClassBtnListener(event1 -> {
-            String newtonClass = view.getStudentClass();
-            studentClassObservableList.add(new NewtonClass(newtonClass));
+            NewtonClass newtonClass = new NewtonClass(view.getStudentClass());
+            commandHandler.send("putnewtonclass",newtonClass);
+            commandHandler.send("getallstudentclasses","");
             view.clearAddClassTextField();
         });
 
@@ -94,14 +110,21 @@ public class AdminController extends Application{
             if (view.getSelectedClass() != null) {
                 NewtonClass newtonClass = view.getSelectedClass();
 
-                commandHandler.send("putnewtonclass",newtonClass);
-                studentClassObservableList.add(newtonClass);
+                int newtonClassId = 0;
 
-                student.setNewtonClass(newtonClass);
+                for (int i = 0; i < studentClassObservableList.size(); i++) {
+                    if (studentClassObservableList.get(i).getName().equals(newtonClass.getName())){
+                        newtonClassId = studentClassObservableList.get(i).getId();
+                        System.out.println(newtonClassId);
+                    }
+                }
+
+                student.setNewtonClassId(newtonClassId);
             }
 
             commandHandler.send("putstudent",student);
-            studentObservableList.add(student);
+            commandHandler.send("getallstudents","");
+            //studentObservableList.add(student);
 
             view.clearAddUserTextFields();
         });
@@ -169,9 +192,20 @@ public class AdminController extends Application{
 
         view.createTestBtnListener(event -> {
             commandHandler.send("puttest",schoolTest);
-
             commandHandler.send("getalltests","");
 
+            //Reset the testform:
+            view.startOverTest();
+        });
+
+        view.startOverBtnListener(event -> {
+            view.startOverTest();
+        });
+
+        primaryStage.setOnCloseRequest(event -> {
+            commandHandler.disconnectServer();
+            Platform.exit();
+            System.exit(0);
         });
 
     }
@@ -195,6 +229,33 @@ public class AdminController extends Application{
 
     public void addTest(SchoolTest schoolTest){
         testObservableList.add(schoolTest);
+    }
+
+    public void addStudent(TableStudent student){
+        int newtonClassId = student.getNewtonClassId();
+
+        for (int i = 0; i < studentClassObservableList.size(); i++) {
+            if (newtonClassId == studentClassObservableList.get(i).getId()){
+                student.setNewtonClass(studentClassObservableList.get(i).getName());
+            }
+        }
+        studentObservableList.add(student);
+    }
+
+    public void addNewtonClass (NewtonClass newtonClass){
+        studentClassObservableList.add(newtonClass);
+    }
+
+    public void clearStudentList(){
+        studentObservableList.clear();
+    }
+
+    public void clearClassList(){
+        studentClassObservableList.clear();
+    }
+
+    public void clearTestList(){
+        testObservableList.clear();
     }
 
     public static void main(String[] args) {

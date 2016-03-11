@@ -9,7 +9,7 @@ import java.util.List;
 
 public class SchoolTest {
 
-	private int id;
+	private Integer id;
 	private String name;
 	private String subject;
     private int testTime;

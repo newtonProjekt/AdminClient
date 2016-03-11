@@ -4,7 +4,7 @@ package adminClient.gui;
  * The model for a Table based on the class User.
  */
 
-import adminClient.beans.Student;
+import adminClient.beans.TableStudent;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -14,12 +14,12 @@ import javafx.scene.control.cell.PropertyValueFactory;
  * Created by Jonas on 2016-03-03.
  */
 
-public class UserTable extends TableView<Student> {
+public class UserTable extends TableView<TableStudent> {
 
-    private TableColumn<Student, Long> userPersNumb = new TableColumn<Student, Long>("Personnummer");
-    private TableColumn<Student, String> userFirstName = new TableColumn<Student, String>("Förnamn");
-    private TableColumn<Student, String> userLastName = new TableColumn<Student, String>("Efteramn");
-    private TableColumn<Student, String> userStudentClass = new TableColumn<Student, String>("Klass");
+    private TableColumn<TableStudent, Long> userPersNumb = new TableColumn<TableStudent, Long>("Personnummer");
+    private TableColumn<TableStudent, String> userFirstName = new TableColumn<TableStudent, String>("Förnamn");
+    private TableColumn<TableStudent, String> userLastName = new TableColumn<TableStudent, String>("Efteramn");
+    private TableColumn<TableStudent, String> userStudentClass = new TableColumn<TableStudent, String>("Klass");
 
     public UserTable() {
         this.setEditable(true);
@@ -37,7 +37,7 @@ public class UserTable extends TableView<Student> {
 
     }
 
-    public void setTableList(ObservableList<Student> userObservableList){
+    public void setTableList(ObservableList<TableStudent> userObservableList){
         this.setItems(userObservableList);
     }
 }

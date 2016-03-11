@@ -24,6 +24,8 @@ import java.util.ArrayList;
 
 public class AddTest extends BorderPane{
 
+    //TODO räknare för antal frågor, bekräftelse innan skapa prov.
+
     //Components:
     private Text testHeader = new Text("Skapa nytt prov:");
     private GridPane testGrid = new GridPane();
@@ -296,5 +298,9 @@ public class AddTest extends BorderPane{
 
     public void createTestBtnListener (EventHandler<ActionEvent> buttonListener){
         createTestBtn.setOnAction(buttonListener);
+    }
+
+    public void startOverBtnListener (EventHandler<ActionEvent> buttonlistener){
+        startOverBtn.setOnAction(buttonlistener);
     }
 }

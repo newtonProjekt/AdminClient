@@ -12,7 +12,7 @@ import java.util.List;
 
 public class Question {
 
-	private int id;
+	private Integer id;
 	private boolean multiQuestion;
 	private int points;
 	private boolean vgQuestion;

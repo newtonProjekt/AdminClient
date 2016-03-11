@@ -4,8 +4,6 @@ package adminClient.gui;
  * Class for creating a loginbox.
  */
 
-import adminClient.beans.Login;
-import adminClient.network.CommandHandler;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -22,7 +20,6 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
@@ -37,7 +34,7 @@ public class LoginBox extends Stage {
     //Components:
     private String userNameInput;
     private String passwordInput;
-    private Text scenetitle = new Text("Admininistratör");
+    private Text scenetitle = new Text("Administratör");
     private Image loginImage = new Image("file:logo-loginbox.png");
     private ImageView imageView = new ImageView(loginImage);
     private Label userNameLabel = new Label("Användarnamn:");
