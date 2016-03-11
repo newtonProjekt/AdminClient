@@ -6,7 +6,7 @@ package adminClient.gui;
 
 import adminClient.beans.NewtonClass;
 import adminClient.beans.SchoolTest;
-import adminClient.beans.Student;
+import adminClient.beans.TableStudent;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -212,9 +212,10 @@ public class AdminView {
      * Get the selected user from the tableview.
      * @return = the selected user as a "User"-object.
      */
-    public Student getSelectedUser(){
-        Student selectedUser = (Student) userTableView.getSelectionModel().getSelectedItem();
-        return selectedUser;
+    public long getSelectedUser(){
+        TableStudent selectedUser = (TableStudent) userTableView.getSelectionModel().getSelectedItem();
+        long selectedUserId = selectedUser.getPersNumber();
+        return selectedUserId;
     }
 
     public void startOverTest(){

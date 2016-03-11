@@ -129,11 +129,17 @@ public class AdminController extends Application{
             view.clearAddUserTextFields();
         });
 
-        //DELETE CLASS
-        view.deleteTestBtnListener(event -> testObservableList.remove(view.getSelectedTest()));
+        //DELETE TEST
+        view.deleteTestBtnListener(event -> {
+            commandHandler.send("deletetest",view.getSelectedTest());
+            commandHandler.send("getalltests","");
+        });
 
         //DELETE USER
-        view.deleteUserBtnListener(event -> studentObservableList.remove(view.getSelectedUser()));
+        view.deleteUserBtnListener(event -> {
+            commandHandler.send("deletestudent",view.getSelectedUser());
+            commandHandler.send("getallstudents","");
+        });
 
         //IF CLASSLIST CHANGED, UPDATE COMBOBOX:
         studentClassObservableList.addListener((ListChangeListener<NewtonClass>) c -> {
