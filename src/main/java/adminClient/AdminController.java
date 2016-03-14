@@ -43,12 +43,11 @@ public class AdminController extends Application{
     @Override
     public void start(Stage primaryStage) throws Exception {
 
-        //TODO kunna redigera prov, ny knapp som heter "uppdatera prov".
-        //TODO kunna redigera elev, ändra klass osv
+        //TODO kunna redigera prov.
         //TODO kunna ta bort en klass.
         //TODO dela prov till elever ELLER klasser, listviews.
-        //TODO delete student, klass och test.
         //TODO restrict textfields till bara nummer / bokstäver.
+        //TODO hemfönstret.
 
         //Create objects of a CommandHandler and a LoginBox:
         commandHandler = new CommandHandler(this);
@@ -56,7 +55,6 @@ public class AdminController extends Application{
         commandHandler.registerServer(networkConnection);
         Thread networkThread = new Thread(networkConnection);
         networkThread.start();
-
 
         loginBox = new LoginBox();
 
@@ -81,15 +79,6 @@ public class AdminController extends Application{
         commandHandler.send("getallstudentclasses","");
         commandHandler.send("getallstudents","");
 
-        // TEST_AREA ---------------------------------------------------------------------------------------------------
-
-/*
-        testObservableList.addAll(
-                new SchoolTest("Delprov 1, JavaFX","Utveckling av desktopapplikationer",120),
-                new SchoolTest("Delprov 2, JavaEE","Utveckling av desktopapplikationer",120),
-                new SchoolTest("Delprov 1, HTML och CSS","Utveckling av webbapplikationer",120)
-        );
-*/
 
         //ADD CLASS
         view.addClassBtnListener(event1 -> {
@@ -107,8 +96,8 @@ public class AdminController extends Application{
 
             student = new Student(pNumb,fName,lName);
 
-            if (view.getSelectedClass() != null) {
-                NewtonClass newtonClass = view.getSelectedClass();
+            if (view.addUserGetSelectedClass() != null) {
+                NewtonClass newtonClass = view.addUserGetSelectedClass();
 
                 int newtonClassId = 0;
 
@@ -124,9 +113,9 @@ public class AdminController extends Application{
 
             commandHandler.send("putstudent",student);
             commandHandler.send("getallstudents","");
-            //studentObservableList.add(student);
 
             view.clearAddUserTextFields();
+
         });
 
         //DELETE TEST
@@ -138,17 +127,20 @@ public class AdminController extends Application{
 
         //DELETE USER
         view.deleteUserBtnListener(event -> {
+            long selectedUserId = view.getSelectedUser().getPersNumber();
 
-            commandHandler.send("deletestudent",view.getSelectedUser());
+            commandHandler.send("deletestudent",selectedUserId);
             commandHandler.send("getallstudents","");
         });
 
         //IF CLASSLIST CHANGED, UPDATE COMBOBOX:
         studentClassObservableList.addListener((ListChangeListener<NewtonClass>) c -> {
             view.addUserComboBox(studentClassObservableList);
+            view.editUserComboBox(studentClassObservableList);
+            view.deleteClassCmbBox(studentClassObservableList);
+
         });
 
-        //--------------------------------------------------------------------------------------------------------------
 
         //Listener for proceeding when creating a test:
         view.proceedBtnListener(event -> {
@@ -165,6 +157,7 @@ public class AdminController extends Application{
 
         });
 
+        //Save a question:
         view.saveQuestionBtnListener(event -> {
             boolean multiQuestion = view.getMultiAnswerSelected();
             boolean vgQuestion = view.getVgQuestion();
@@ -208,6 +201,62 @@ public class AdminController extends Application{
 
         view.startOverBtnListener(event -> {
             view.startOverTest();
+        });
+
+        view.editUserBtnListener(event -> {
+            TableStudent selectedStudent = view.getSelectedUser();
+
+            view.setOldFname(selectedStudent.getFirstName());
+            view.setOldLname(selectedStudent.getSurName());
+            view.setOldPnumb(selectedStudent.getPersNumber());
+
+            for (int i = 0; i < studentClassObservableList.size(); i++) {
+                if (studentClassObservableList.get(i).getId() == selectedStudent.getNewtonClassId()){
+                    view.editUserSetComboBox(studentClassObservableList.get(i));
+                }
+            }
+            view.handleUserEditUser();
+        });
+
+        view.editUserFormButton(event -> {
+            String fName = view.getNewFname();
+            String lName = view.getNewLname();
+            long pNumb = Long.parseLong(view.getNewPnumb());
+            Student student = new Student(pNumb,fName,lName);
+
+            if (view.editUserSelectedClass() != null) {
+                NewtonClass newtonClass = view.editUserSelectedClass();
+
+                int newtonClassId = 0;
+
+                for (int i = 0; i < studentClassObservableList.size(); i++) {
+                    if (studentClassObservableList.get(i).getName().equals(newtonClass.getName())){
+                        newtonClassId = studentClassObservableList.get(i).getId();
+                    }
+                }
+
+                student.setNewtonClassId(newtonClassId);
+            }
+
+            commandHandler.send("updatestudent",student);
+            commandHandler.send("getallstudents","");
+
+            view.clearEditUserTextFields();
+            view.handleUserTable();
+        });
+
+        view.editUserBackButton(event -> {
+            view.handleUserTable();
+        });
+
+        view.deleteNewtonClassBtnListener(event -> {
+            if (view.getDeleteStudentsCb()){
+                commandHandler.send("deletestudentsfromclass",view.newtonClasstoRemove());
+            }
+            commandHandler.send("deleteclass",view.newtonClasstoRemove());
+            commandHandler.send("getallstudentclasses","");
+            commandHandler.send("getallstudents","");
+            view.clearDeleteClassCmbBox();
         });
 
         primaryStage.setOnCloseRequest(event -> {

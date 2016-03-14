@@ -14,6 +14,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
@@ -23,26 +24,27 @@ import javafx.util.Callback;
  * Created by Jonas on 2016-03-07.
  */
 
-public class AddUser extends GridPane{
+public class EditUser extends GridPane{
 
     //Components:
-    private Text headerText = new Text("Skapa ny användare:");
+    private Text headerText = new Text("Redigera användare:");
     private Label fNameLabel = new Label("Förnamn:");
     private Label lNameLabel = new Label("Efternamn:");
     private Label pNumberLabel = new Label("Personnummer:");
     private Label studentClassLabel = new Label("Klass:");
-    private Label studentAddedLabel = new Label("");
     private TextField fNameTextField = new TextField();
     private TextField lNameTextField = new TextField();
     private TextField pNumberTextField = new TextField();
-    private Button addUserButton = new Button("Lägg till användare");
+    private Button backButton = new Button("Tillbaka");
+    private Button editUserButton = new Button("Klar");
     private ColumnConstraints column1 = new ColumnConstraints();
     private ComboBox<NewtonClass> comboBox = new ComboBox<>();
+    private HBox buttonBox = new HBox(20);
 
-    public AddUser() {
+    public EditUser() {
 
         //Init gridpane:
-        this.setPadding(new Insets(10,10,10,10));
+        this.setPadding(new Insets(30,30,30,30));
         this.setHgap(10);
         this.setVgap(10);
         column1.setHalignment(HPos.RIGHT);
@@ -50,7 +52,8 @@ public class AddUser extends GridPane{
         headerText.setFont(Font.font("Tahoma", FontWeight.NORMAL, 15));
         this.getColumnConstraints().add(column1);
         this.setAlignment(Pos.TOP_CENTER);
-        comboBox.setMinWidth(170);
+        buttonBox.getChildren().addAll(backButton,editUserButton);
+        pNumberTextField.setDisable(true);
 
         //Add components to gridpane:
         this.add(headerText,1,0);
@@ -62,8 +65,7 @@ public class AddUser extends GridPane{
         this.add(lNameTextField,1,2);
         this.add(pNumberTextField,1,3);
         this.add(comboBox,1,4);
-        this.add(addUserButton,1,5);
-        this.add(studentAddedLabel,1,6);
+        this.add(buttonBox,1,5);
 
         //Updates the combobox with the student class-names:
         comboBox.setCellFactory(new Callback<ListView<NewtonClass>, ListCell<NewtonClass>>() {
@@ -87,8 +89,12 @@ public class AddUser extends GridPane{
      * Listener for button.
      * @param buttonListener = Eventhandler, incomming from the controller-class via the view-class.
      */
-    public void addUserButtonListener (EventHandler<ActionEvent> buttonListener){
-        addUserButton.setOnAction(buttonListener);
+    public void editUserButtonListener (EventHandler<ActionEvent> buttonListener){
+        editUserButton.setOnAction(buttonListener);
+    }
+
+    public void backButtonListener (EventHandler<ActionEvent> buttonListener){
+        backButton.setOnAction(buttonListener);
     }
 
     //Getters & setters:
@@ -104,16 +110,29 @@ public class AddUser extends GridPane{
         return pNumberTextField.getText();
     }
 
+    public void setfNameTextField(String fNameText) {
+        fNameTextField.setText(fNameText);
+    }
+
+    public void setlNameTextField(String lNameText) {
+        lNameTextField.setText(lNameText);
+    }
+
+    public void setpNumberTextField(long pNumbText) {
+        String pNumber = String.valueOf(pNumbText);
+        pNumberTextField.setText(pNumber);
+    }
+
+    public void setComboBox(NewtonClass newtonClass) {
+        comboBox.setValue(newtonClass);
+    }
+
     public void setCmbBox(ObservableList observableList){
         comboBox.setItems(observableList);
     }
 
     public NewtonClass getSelectedClass(){
         return comboBox.getSelectionModel().getSelectedItem();
-    }
-
-    public void setStudentAdded(String student){
-        studentAddedLabel.setText(student);
     }
 
     public void clearTextFields(){

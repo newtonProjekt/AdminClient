@@ -12,8 +12,13 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
@@ -21,6 +26,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import java.awt.*;
 import java.util.ArrayList;
 
 /**
@@ -40,6 +46,7 @@ public class AdminView {
     private HBox handleTestButtons = new HBox(10);
     private VBox handleUsersPanel = new VBox(5);
     private HBox handleUserButtons = new HBox(10);
+    private VBox newtonClassPanel = new VBox(100);
     //Buttons:
     private Button editTestBtn = new Button("Redigera prov");
     private Button deleteTestBtn = new Button("Radera prov");
@@ -71,6 +78,8 @@ public class AdminView {
     private AddUser addUser = new AddUser();
     private AddStudentClass addStudentClass = new AddStudentClass();
     private AddTest addTest = new AddTest();
+    private EditUser editUser = new EditUser();
+    private DeleteStudentClass deleteStudentClass = new DeleteStudentClass();
 
     /**
      * Constructor of the view.
@@ -81,7 +90,7 @@ public class AdminView {
      */
     public AdminView(Stage window) {
         this.window = window;
-        scene = new Scene(mainBorderPane,800,600);
+        scene = new Scene(mainBorderPane, 800, 600);
 
         buildGUI();
         initComponents();
@@ -97,7 +106,7 @@ public class AdminView {
     /**
      * Builds the GUI (sets layouts)
      */
-    void buildGUI(){
+    void buildGUI() {
 
         //Add the logo-image to the H-box 'topMenuPanel'.
         topMenuPanel.getChildren().add(imageView);
@@ -113,8 +122,11 @@ public class AdminView {
         //Add the TabPane 'usersTabPane' to the BorderPane 'userBorderPane'.
         userBorderPane.setCenter(usersTabPane);
 
-        //Add the add user-form and add studentclass-form to the Hbox 'createUserPanel'.
-        createUserPanel.getChildren().addAll(addUser,addStudentClass);
+        //Add the add class-form and the delete class-form to the VBox 'newtonClassPanel'.
+        newtonClassPanel.getChildren().addAll(addStudentClass,deleteStudentClass);
+
+        //Add the add user-form and add VBox newtonclasspanel to the Hbox 'createUserPanel'.
+        createUserPanel.getChildren().addAll(addUser, newtonClassPanel);
 
         //Add the add test-form to the ScrollPane 'createTestScrollPane'.
         createTestScrollPane.setContent(addTest);
@@ -138,7 +150,7 @@ public class AdminView {
     /**
      * Initializes the components.
      */
-    void initComponents(){
+    void initComponents() {
         //Can't close tabs:
         mainMenuTabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
         testsTabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
@@ -165,8 +177,8 @@ public class AdminView {
         createTestScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
 
         bottomMenuPanel.setPrefHeight(40);
-        handleTestButtons.setPadding(new Insets(5,5,5,5));
-        handleUserButtons.setPadding(new Insets(5,5,5,5));
+        handleTestButtons.setPadding(new Insets(5, 5, 5, 5));
+        handleUserButtons.setPadding(new Insets(5, 5, 5, 5));
         deleteUserBtn.setPrefWidth(150);
         editUserBtn.setPrefWidth(150);
         editTestBtn.setPrefWidth(110);
@@ -176,7 +188,7 @@ public class AdminView {
         createTestScrollPane.setFitToHeight(true);
 
         //Autoscroll:
-        addTest.heightProperty().addListener((ChangeListener) (observable, oldvalue, newValue) -> createTestScrollPane.setVvalue((Double)newValue ));
+        addTest.heightProperty().addListener((observable, oldvalue, newValue) -> createTestScrollPane.setVvalue((Double) newValue));
     }
 
     /**
@@ -184,16 +196,17 @@ public class AdminView {
      *
      * @param userTable = TableView made from the class User.
      */
-    public void setUserTableView (TableView userTable){
+    public void setUserTableView(TableView userTable) {
         userTableView = userTable;
         handleUsersPanel.getChildren().addAll(userTableView, handleUserButtons);
     }
 
     /**
      * Inits the TableView 'testTableView', also adds the table and buttons to a borderpane.
+     *
      * @param testTable = TableView made from the class Test.
      */
-    public void setTestTableView (TableView testTable){
+    public void setTestTableView(TableView testTable) {
         testTableView = testTable;
         //Add the TableView 'testTableView' and the H-box 'handleTestButtons' to the V-box 'handleTestPanel'.
         handleTestPanel.getChildren().addAll(testTableView, handleTestButtons);
@@ -201,9 +214,10 @@ public class AdminView {
 
     /**
      * Get the selected test from the tableview.
+     *
      * @return = the selected test as a "Test"-object.
      */
-    public int getSelectedTest(){
+    public int getSelectedTest() {
         SchoolTest selectedTest = (SchoolTest) testTableView.getSelectionModel().getSelectedItem();
         int selectedTestId = selectedTest.getId();
         return selectedTestId;
@@ -211,117 +225,182 @@ public class AdminView {
 
     /**
      * Get the selected user from the tableview.
+     *
      * @return = the selected user as a "User"-object.
      */
-    public long getSelectedUser(){
+    public TableStudent getSelectedUser() {
         TableStudent selectedUser = (TableStudent) userTableView.getSelectionModel().getSelectedItem();
-        long selectedUserId = selectedUser.getPersNumber();
-        return selectedUserId;
+        return selectedUser;
     }
-
-    public void startOverTest(){
+    public void startOverTest() {
         AddTest addTest = new AddTest();
         createTestScrollPane.setContent(addTest);
+    }
+    public void handleUserTable() {
+        handleUsersTab.setContent(handleUsersPanel);
+    }
+    public void handleUserEditUser() {
+        handleUsersTab.setContent(editUser);
     }
 
     /**
      * Getters & Setters from the "AddUser"-class, called from the AdminController-class.
      */
-    public String getFname(){
+    public String getFname() {
         return addUser.getfNameTextField();
     }
-    public String getLname(){
+    public String getLname() {
         return addUser.getlNameTextField();
     }
-    public String getPnumb(){
+    public String getPnumb() {
         return addUser.getpNumberTextField();
     }
-    public String getStudentClass(){
-        return addStudentClass.getStudentClassTextField();
-    }
-    public void clearAddUserTextFields(){
+    public void clearAddUserTextFields() {
         addUser.clearTextFields();
     }
-    public void addUserComboBox(ObservableList observableList){
+    public void addUserComboBox(ObservableList observableList) {
         addUser.setCmbBox(observableList);
     }
-    public void clearAddClassTextField(){
-        addStudentClass.clearTextFields();
-    }
-    public NewtonClass getSelectedClass(){
+    public NewtonClass addUserGetSelectedClass() {
         return addUser.getSelectedClass();
     }
 
-    //add test
-    public void initProceedBtn(){
-        addTest.initProceedBtn();
+    //NewtonClass
+    public void clearAddClassTextField() {
+        addStudentClass.clearTextFields();
     }
-    public String getTestName(){
-        return addTest.getTestName();
-    }
-    public String getSubjectName(){
-        return addTest.getSubject();
-    }
-    public int getTestTime(){
-        return addTest.getTestTime();
-    }
-    public boolean getMultiAnswerSelected(){
-        return addTest.getMultiAnswerSelected();
-    }
-    public String getQuestion(){
-        return addTest.getQuestion();
-    }
-    public ArrayList<TextField> getMultiAnswerList(){
-        return addTest.getMultiAnswerList();
-    }
-    public String getCorrectAnswer(){
-        return addTest.getCorrectAnswer();
-    }
-    public int getQuestionPoint(){
-        return addTest.getQuestionPoint();
-    }
-    public boolean getVgQuestion(){
-        return addTest.getVgQuestion();
-    }
-    public void initSaveQuestionBtn(){
-        addTest.initSaveQuestionBtn();
+    public String getStudentClass() {
+        return addStudentClass.getStudentClassTextField();
     }
 
+    //add test
+    public void initProceedBtn() {
+        addTest.initProceedBtn();
+    }
+    public String getTestName() {
+        return addTest.getTestName();
+    }
+    public String getSubjectName() {
+        return addTest.getSubject();
+    }
+    public int getTestTime() {
+        return addTest.getTestTime();
+    }
+    public boolean getMultiAnswerSelected() {
+        return addTest.getMultiAnswerSelected();
+    }
+    public String getQuestion() {
+        return addTest.getQuestion();
+    }
+    public ArrayList<TextField> getMultiAnswerList() {
+        return addTest.getMultiAnswerList();
+    }
+    public String getCorrectAnswer() {
+        return addTest.getCorrectAnswer();
+    }
+    public int getQuestionPoint() {
+        return addTest.getQuestionPoint();
+    }
+    public boolean getVgQuestion() {
+        return addTest.getVgQuestion();
+    }
+    public void initSaveQuestionBtn() {
+        addTest.initSaveQuestionBtn();
+    }
+    public void studentAddedLabel(String student) {
+        addUser.setStudentAdded(student);
+    }
+
+    //delete class
+    public int newtonClasstoRemove(){
+       return deleteStudentClass.classIdToRemove();
+    }
+    public void clearDeleteClassCmbBox(){
+        deleteStudentClass.clearCmbBox();
+    }
+    public void deleteClassCmbBox(ObservableList observableList){
+        deleteStudentClass.setCmbBox(observableList);
+    }
+    public boolean getDeleteStudentsCb(){
+        return deleteStudentClass.getDeleteStudentsCb();
+    }
+
+    //edit user
+    public void setOldFname(String fName) {
+        editUser.setfNameTextField(fName);
+    }
+    public void setOldLname(String lName) {
+        editUser.setlNameTextField(lName);
+    }
+    public void setOldPnumb(long pnumb) {
+        editUser.setpNumberTextField(pnumb);
+    }
+    public String getNewFname() {
+        return editUser.getfNameTextField();
+    }
+    public String getNewLname() {
+        return editUser.getlNameTextField();
+    }
+    public String getNewPnumb() {
+        return editUser.getpNumberTextField();
+    }
+    public void clearEditUserTextFields() {
+        editUser.clearTextFields();
+    }
+    public void editUserComboBox(ObservableList observableList) {
+        editUser.setCmbBox(observableList);
+    }
+    public NewtonClass editUserSelectedClass() {
+        return editUser.getSelectedClass();
+    }
+    public void editUserSetComboBox(NewtonClass newtonClass) {
+        editUser.setComboBox(newtonClass);
+    }
 
     /**
      * Listeners for the GUI.
      */
-    public void editTestBtnListener(EventHandler<ActionEvent> listener){
+    public void editTestBtnListener(EventHandler<ActionEvent> listener) {
         editTestBtn.setOnAction(listener);
     }
-    public void deleteTestBtnListener(EventHandler<ActionEvent> listener){
+    public void deleteTestBtnListener(EventHandler<ActionEvent> listener) {
         deleteTestBtn.setOnAction(listener);
     }
-    public void statTestBtnListener(EventHandler<ActionEvent> listener){
+    public void statTestBtnListener(EventHandler<ActionEvent> listener) {
         statTestBtn.setOnAction(listener);
     }
-    public void editUserBtnListener(EventHandler<ActionEvent> listener){
-        editTestBtn.setOnAction(listener);
+    public void editUserBtnListener(EventHandler<ActionEvent> listener) {
+        editUserBtn.setOnAction(listener);
     }
-    public void deleteUserBtnListener(EventHandler<ActionEvent> listener){
+    public void deleteUserBtnListener(EventHandler<ActionEvent> listener) {
         deleteUserBtn.setOnAction(listener);
     }
     public void addUserBtnListener(EventHandler<ActionEvent> listener) {
         addUser.addUserButtonListener(listener);
     }
-    public void addClassBtnListener(EventHandler<ActionEvent> listener){
+    public void addClassBtnListener(EventHandler<ActionEvent> listener) {
         addStudentClass.addClassButtonListener(listener);
     }
-    public void proceedBtnListener(EventHandler<ActionEvent> listener){
+    public void proceedBtnListener(EventHandler<ActionEvent> listener) {
         addTest.proceedBtnListener(listener);
     }
-    public void saveQuestionBtnListener(EventHandler<ActionEvent> listener){
+    public void saveQuestionBtnListener(EventHandler<ActionEvent> listener) {
         addTest.saveQuestionBtnListener(listener);
     }
-    public void createTestBtnListener(EventHandler<ActionEvent> listener){
+    public void createTestBtnListener(EventHandler<ActionEvent> listener) {
         addTest.createTestBtnListener(listener);
     }
-    public void startOverBtnListener(EventHandler<ActionEvent> listener){
+    public void startOverBtnListener(EventHandler<ActionEvent> listener) {
         addTest.startOverBtnListener(listener);
     }
+    public void editUserFormButton(EventHandler<ActionEvent> listener) {
+        editUser.editUserButtonListener(listener);
+    }
+    public void editUserBackButton(EventHandler<ActionEvent> listener) {
+        editUser.backButtonListener(listener);
+    }
+    public void deleteNewtonClassBtnListener(EventHandler<ActionEvent> listener) {
+        deleteStudentClass.removeClassBtnListener(listener);
+    }
+
 }
