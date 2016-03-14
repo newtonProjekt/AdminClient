@@ -131,12 +131,14 @@ public class AdminController extends Application{
 
         //DELETE TEST
         view.deleteTestBtnListener(event -> {
+
             commandHandler.send("deletetest",view.getSelectedTest());
             commandHandler.send("getalltests","");
         });
 
         //DELETE USER
         view.deleteUserBtnListener(event -> {
+
             commandHandler.send("deletestudent",view.getSelectedUser());
             commandHandler.send("getallstudents","");
         });

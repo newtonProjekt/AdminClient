@@ -203,9 +203,10 @@ public class AdminView {
      * Get the selected test from the tableview.
      * @return = the selected test as a "Test"-object.
      */
-    public SchoolTest getSelectedTest(){
+    public int getSelectedTest(){
         SchoolTest selectedTest = (SchoolTest) testTableView.getSelectionModel().getSelectedItem();
-        return selectedTest;
+        int selectedTestId = selectedTest.getId();
+        return selectedTestId;
     }
 
     /**
