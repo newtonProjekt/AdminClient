@@ -61,6 +61,7 @@ public class CommandHandler {
             case "getallstudentclasses":
                 NewtonClass[] newtonClasses = gson.fromJson(cmdData.get(0),NewtonClass[].class);
 
+
                 adminController.clearClassList();
                 for (int i = 0; i < newtonClasses.length; i++) {
                     adminController.addNewtonClass(newtonClasses[i]);

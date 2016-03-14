@@ -80,6 +80,7 @@ public class AdminView {
     private AddTest addTest = new AddTest();
     private EditUser editUser = new EditUser();
     private DeleteStudentClass deleteStudentClass = new DeleteStudentClass();
+    private ShareTest shareTest = new ShareTest();
 
     /**
      * Constructor of the view.
@@ -184,6 +185,7 @@ public class AdminView {
         editTestBtn.setPrefWidth(110);
         deleteTestBtn.setPrefWidth(110);
         statTestBtn.setPrefWidth(110);
+        shareTestBtn.setPrefWidth(110);
         createTestScrollPane.setFitToWidth(true);
         createTestScrollPane.setFitToHeight(true);
 
@@ -233,7 +235,7 @@ public class AdminView {
         return selectedUser;
     }
     public void startOverTest() {
-        AddTest addTest = new AddTest();
+        addTest = new AddTest();
         createTestScrollPane.setContent(addTest);
     }
     public void handleUserTable() {
@@ -241,6 +243,9 @@ public class AdminView {
     }
     public void handleUserEditUser() {
         handleUsersTab.setContent(editUser);
+    }
+    public void showShareTest(){
+        shareTest.showAndWait();
     }
 
     /**
@@ -264,6 +269,10 @@ public class AdminView {
     public NewtonClass addUserGetSelectedClass() {
         return addUser.getSelectedClass();
     }
+    public void studentAddedLabel(String student) {
+        addUser.setStudentAdded(student);
+    }
+
 
     //NewtonClass
     public void clearAddClassTextField() {
@@ -306,9 +315,6 @@ public class AdminView {
     }
     public void initSaveQuestionBtn() {
         addTest.initSaveQuestionBtn();
-    }
-    public void studentAddedLabel(String student) {
-        addUser.setStudentAdded(student);
     }
 
     //delete class
@@ -402,5 +408,7 @@ public class AdminView {
     public void deleteNewtonClassBtnListener(EventHandler<ActionEvent> listener) {
         deleteStudentClass.removeClassBtnListener(listener);
     }
-
+    public void shareTestBtnListener(EventHandler<ActionEvent> listener){
+        shareTestBtn.setOnAction(listener);
+    }
 }

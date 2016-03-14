@@ -44,7 +44,7 @@ public class AdminController extends Application{
     public void start(Stage primaryStage) throws Exception {
 
         //TODO kunna redigera prov.
-        //TODO kunna ta bort en klass.
+        //TODO bekräftelse innan man skapar ett prov.
         //TODO dela prov till elever ELLER klasser, listviews.
         //TODO restrict textfields till bara nummer / bokstäver.
         //TODO hemfönstret.
@@ -257,6 +257,10 @@ public class AdminController extends Application{
             commandHandler.send("getallstudentclasses","");
             commandHandler.send("getallstudents","");
             view.clearDeleteClassCmbBox();
+        });
+
+        view.shareTestBtnListener(event1 -> {
+           view.showShareTest();
         });
 
         primaryStage.setOnCloseRequest(event -> {

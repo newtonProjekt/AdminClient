@@ -28,7 +28,7 @@ public class AddStudentClass extends GridPane {
 
     public AddStudentClass() {
         //Init gridpane:
-        this.setPadding(new Insets(30,30,30,30));
+        this.setPadding(new Insets(10,100,10,10));
         this.setHgap(10);
         this.setVgap(10);
         column1.setHalignment(HPos.RIGHT);
