@@ -9,6 +9,8 @@ import javafx.collections.ObservableList;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import java.util.Date;
+
 
 /**
  * Created by Jonas on 2016-03-03.
@@ -18,17 +20,17 @@ public class TestTable extends TableView<SchoolTest>{
 
     private TableColumn<SchoolTest, Integer> testName = new TableColumn<SchoolTest, Integer>("Prov");
     private TableColumn<SchoolTest, String> testSubject = new TableColumn<SchoolTest, String>("Ämne");
-    private TableColumn<SchoolTest, String> testDateCreated = new TableColumn<SchoolTest, String>("Skapat");
+    private TableColumn<SchoolTest, Date> testDateCreated = new TableColumn<SchoolTest, Date>("Skapat");
 
     public TestTable() {
         this.setEditable(true);
 
         testName.setCellValueFactory(new PropertyValueFactory<SchoolTest, Integer>("name"));
-        testName.setPrefWidth(348);
+        testName.setPrefWidth(298);
         testSubject.setCellValueFactory(new PropertyValueFactory<SchoolTest,String>("subject"));
-        testSubject.setPrefWidth(350);
-        testDateCreated.setCellValueFactory(new PropertyValueFactory<SchoolTest, String>("dateCreated"));
-        testDateCreated.setPrefWidth(100);
+        testSubject.setPrefWidth(300);
+        testDateCreated.setCellValueFactory(new PropertyValueFactory<SchoolTest,Date >("dateCreated"));
+        testDateCreated.setPrefWidth(200);
 
         this.getColumns().setAll(testName, testSubject, testDateCreated);
     }

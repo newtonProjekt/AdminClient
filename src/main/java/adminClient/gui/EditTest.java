@@ -26,7 +26,7 @@ import java.util.List;
  * Created by Jonas on 2016-03-07.
  */
 
-public class AddTest extends BorderPane {
+public class EditTest extends BorderPane {
 
     //Layouts:
     private GridPane testGrid = new GridPane();
@@ -34,14 +34,14 @@ public class AddTest extends BorderPane {
     private HBox radioButtonBox = new HBox(10);
     private VBox multiAnswerBox;
     private HBox answerHBox = new HBox(10);
-    private HBox questionBtnBox = new HBox(10);
-    private BorderPane bottomBtnBorderPane = new BorderPane();
+    private HBox saveDeleteQuestionBox = new HBox(10);
     private HBox leftBorderBox = new HBox(10);
     private HBox rightBorderBox = new HBox(10);
+    private BorderPane bottomBtnBorderPane = new BorderPane();
 
     //Textobjects:
-    private Text testHeader = new Text("Skapa nytt prov:");
-    private Text questionHeader = new Text("Skapa fråga: 1");
+    private Text testHeader = new Text("Redigera prov:");
+    private Text questionHeader = new Text("Redigera fråga: ");
 
     //Labels:
     private Label testName = new Label("Provnamn:");
@@ -84,9 +84,9 @@ public class AddTest extends BorderPane {
 
     //Buttons:
     private Button proceedBtn = new Button("Vidare");
-    private Button startOverBtn = new Button("Börja om");
+    private Button backButton = new Button("Tillbaka");
     private Button saveQuestionBtn = new Button("Spara fråga");
-    private Button createTestBtn = new Button("Skapa prov");
+    private Button createTestBtn = new Button("Spara prov");
     private Button nextQuestionBtn = new Button("Nästa fråga");
     private Button lastQuestionBtn = new Button("Föregående fråga");
     private Button deleteQuestion = new Button("Radera fråga");
@@ -106,9 +106,10 @@ public class AddTest extends BorderPane {
     private int currentQuestion = 0;
     private Question question;
 
-    public AddTest(SchoolTest schoolTestIn) {
+    public EditTest(SchoolTest schoolTestIn) {
         this.schoolTest = schoolTestIn;
         questionList = schoolTest.getQuestions();
+        initTest();
 
         //Init testGridPane:
         testGrid.setPadding(new Insets(30, 30, 30, 30));
@@ -142,24 +143,25 @@ public class AddTest extends BorderPane {
         gAnswerRb.setSelected(true);
         textAnswerRb.setSelected(true);
         radioButtonBox.getChildren().addAll(textAnswerRb, multiAnswerRb);
-        leftBorderBox.getChildren().add(startOverBtn);
+        leftBorderBox.getChildren().add(backButton);
         bottomBtnBorderPane.setLeft(leftBorderBox);
         bottomBtnBorderPane.setCenter(questionCounter);
         bottomBtnBorderPane.setRight(rightBorderBox);
         answerHBox.getChildren().addAll(scoreTextField, gAnswerRb, vgAnswerRb);
-        questionBtnBox.getChildren().addAll(saveQuestionBtn,deleteQuestion,newQuestion);
+        saveDeleteQuestionBox.getChildren().addAll(saveQuestionBtn,deleteQuestion,newQuestion);
         questionTextArea.setPrefHeight(400);
         questionTextArea.setMinHeight(100);
         answersAmountCmbBox.getItems().addAll(2, 3, 4, 5, 6, 7, 8, 9, 10);
-        answersAmountCmbBox.setValue(3);
         correctAnswerCmbBox.setPromptText("-Välj-");
         bottomBtnBorderPane.setPadding(new Insets(5, 5, 5, 5));
-        startOverBtn.setPrefWidth(90);
-        createTestBtn.setPrefWidth(90);
+        backButton.setPrefWidth(110);
+        nextQuestionBtn.setPrefWidth(110);
+        createTestBtn.setPrefWidth(110);
         testNameTextField.setMinWidth(400);
         subjectTextField.setMinWidth(400);
         timeTextField.setMaxWidth(50);
         scoreTextField.setMaxWidth(40);
+        questionCounterInt = questionList.size();
         questionCounter.setText("Antal frågor: " + (questionCounterInt));
 
         //Add components to test-gridpane:
@@ -182,7 +184,7 @@ public class AddTest extends BorderPane {
         questionGrid.add(radioButtonBox, 1, 2);
         questionGrid.add(scoreLabel, 0, 4);
         questionGrid.add(answerHBox, 1, 4);
-        questionGrid.add(questionBtnBox, 1, 6);
+        questionGrid.add(saveDeleteQuestionBox, 1, 6);
 
         /**
          * GUI LISTENERS:
@@ -204,11 +206,13 @@ public class AddTest extends BorderPane {
         multiAnswerRb.setOnAction(event -> {
 
             //Remove all the old components and add the right ones:
-            questionGrid.getChildren().removeAll(answerHBox, scoreLabel, answerLabel, questionBtnBox, answersAmountLabel, answersAmountCmbBox);
+            questionGrid.getChildren().removeAll(answerHBox, scoreLabel, answerLabel, saveDeleteQuestionBox, answersAmountLabel, answersAmountCmbBox);
 
             questionGrid.add(answersAmountLabel, 0, 4);
             questionGrid.add(answersAmountCmbBox, 1, 4);
-            answersAmountCmbBox.setValue(3);
+            questionGrid.add(scoreLabel, 0, 7);
+            questionGrid.add(answerHBox, 1, 7);
+            questionGrid.add(saveDeleteQuestionBox, 1, 8);
             Event.fireEvent(answersAmountCmbBox, new ActionEvent());
         });
 
@@ -216,10 +220,10 @@ public class AddTest extends BorderPane {
         textAnswerRb.setOnAction(event -> {
 
             //Remove all the old components and add the right ones:
-            questionGrid.getChildren().removeAll(answerHBox, scoreLabel, answerLabel, questionBtnBox, multiAnswerBox, correctAnswerCmbBox, answersAmountLabel, correctAnswerLabel, answersAmountCmbBox);
+            questionGrid.getChildren().removeAll(answerHBox, scoreLabel, answerLabel, saveDeleteQuestionBox, multiAnswerBox, correctAnswerCmbBox, answersAmountLabel, correctAnswerLabel, answersAmountCmbBox);
             questionGrid.add(scoreLabel, 0, 4);
             questionGrid.add(answerHBox, 1, 4);
-            questionGrid.add(questionBtnBox, 1, 5);
+            questionGrid.add(saveDeleteQuestionBox, 1, 5);
         });
 
         //Listener for amount of answers in a multi answer-question:
@@ -262,18 +266,6 @@ public class AddTest extends BorderPane {
             });
         });
 
-        //Listener for when the right answer is chosen, show the "Save question"-button:
-        correctAnswerCmbBox.setOnAction(event -> {
-
-            //If the value is not null, show save question-button:
-            if (correctAnswerCmbBox.getValue() != null) {
-                questionGrid.getChildren().remove(questionBtnBox);
-                questionGrid.add(scoreLabel, 0, 7);
-                questionGrid.add(answerHBox, 1, 7);
-                questionGrid.add(questionBtnBox, 1, 8);
-            }
-        });
-
         lastQuestionBtn.setOnAction(event -> {
             System.out.println("minus " + currentQuestion);
             if (currentQuestion > 0){
@@ -292,6 +284,45 @@ public class AddTest extends BorderPane {
         newQuestion.setOnAction(event -> {
             newQuestion();
         });
+    }
+
+    public void initTest(){
+        testNameTextField.setText(schoolTest.getName());
+        subjectTextField.setText(schoolTest.getSubject());
+        timeTextField.setText(String.valueOf(schoolTest.getTestTime()));
+
+    }
+
+    public void initQuestion(int questionId){
+        question = questionList.get(questionId);
+        List<Answer> answerList = question.getAnswers();
+
+        questionHeader.setText("Redigera fråga: " + (questionId+1));
+
+        questionTextArea.setText(question.getQuestionText());
+        if (question.isMultiQuestion()){
+            answersAmountCmbBox.setValue(answerList.size());
+            multiAnswerRb.fire();
+            for (int i = 0; i < answersList.size(); i++) {
+                answersList.get(i).setText(answerList.get(i).getAnswerText());
+            }
+        }
+        else{
+            textAnswerRb.fire();
+        }
+        for (int i = 0; i < answerList.size(); i++) {
+            if (answerList.get(i).isCorrectAnswer()){
+                correctAnswerCmbBox.setValue(answerList.get(i).getAnswerText());
+            }
+        }
+        scoreTextField.setText(String.valueOf(question.getPoints()));
+    }
+
+    public void removeQuestion(){
+            currentQuestion = 0;
+            initQuestion(currentQuestion);
+            questionCounterInt = questionList.size();
+            questionCounter.setText("Antal frågor: " + questionCounterInt);
     }
 
     public GridPane confirmationBox(){
@@ -323,6 +354,7 @@ public class AddTest extends BorderPane {
         this.setPrefSize(400,400);
 
         return gridPane;
+
     }
 
     /**
@@ -376,91 +408,59 @@ public class AddTest extends BorderPane {
         correctAnswerCmbBox.setValue(null);
     }
 
+    public void newQuestion(){
+        question = null;
+        currentQuestion = questionList.size();
+        questionHeader.setText("Skapa fråga: " + (currentQuestion+1));
+        clearForm();
+    }
+
     /**
      * Listener for the "Proceed"-button.
      * @param buttonListener
      */
-    public void proceedBtnListener(EventHandler<ActionEvent> buttonListener) {
+    public void editTestProceedBtn(EventHandler<ActionEvent> buttonListener) {
         proceedBtn.setOnAction(buttonListener);
     }
 
     /**
      * Init after clicking the proceedbutton:
      */
-    public void initProceedBtn() {
+    public void editTestInitProceed() {
         testNameTextField.setDisable(true);
         subjectTextField.setDisable(true);
         timeTextField.setDisable(true);
         selfCorrectingBox.setDisable(true);
         proceedBtn.setDisable(true);
+        this.setCenter(questionGrid);
+        initQuestion(currentQuestion);
+
         leftBorderBox.getChildren().clear();
         rightBorderBox.getChildren().clear();
-        leftBorderBox.getChildren().addAll(startOverBtn,lastQuestionBtn);
+        leftBorderBox.getChildren().addAll(backButton,lastQuestionBtn);
         rightBorderBox.getChildren().addAll(nextQuestionBtn,createTestBtn);
-        this.setCenter(questionGrid);
-    }
-
-
-    public void initQuestion(int questionId){
-        question = questionList.get(questionId);
-        List<Answer> answerList = question.getAnswers();
-
-        questionHeader.setText("Skapa fråga: " + (questionId+1));
-
-        questionTextArea.setText(question.getQuestionText());
-        if (question.isMultiQuestion()){
-            answersAmountCmbBox.setValue(answerList.size());
-            multiAnswerRb.fire();
-            for (int i = 0; i < answersList.size(); i++) {
-                answersList.get(i).setText(answerList.get(i).getAnswerText());
-            }
-        }
-        else{
-            textAnswerRb.fire();
-        }
-        for (int i = 0; i < answerList.size(); i++) {
-            if (answerList.get(i).isCorrectAnswer()){
-                correctAnswerCmbBox.setValue(answerList.get(i).getAnswerText());
-            }
-        }
-        scoreTextField.setText(String.valueOf(question.getPoints()));
     }
 
     /**
      * Listener for the "Save Question"-button.
      * @param buttonlistener
      */
-    public void saveQuestionBtnListener(EventHandler<ActionEvent> buttonlistener) {
+    public void editTestSaveQuestionBtn(EventHandler<ActionEvent> buttonlistener) {
         saveQuestionBtn.setOnAction(buttonlistener);
+    }
+
+    /**
+     * Listener for the "Delete Question"-button.
+     * @param buttonlistener
+     */
+    public void editTestDeleteQuestionBtn(EventHandler<ActionEvent> buttonlistener){
+        deleteQuestion.setOnAction(buttonlistener);
     }
 
     /**
      * Init after clicking the "Save Question"-button.
      */
-    public void initSaveQuestionBtn() {
-
-        //If it is a multi answer-question:
-        if (multiAnswerRb.isSelected()) {
-            //Remove all the old components and add the right ones:
-            questionGrid.getChildren().remove(questionBtnBox);
-            Event.fireEvent(multiAnswerRb, new ActionEvent());
-        }
-        questionCounterInt++;
-        currentQuestion++;
-        questionCounter.setText("Antal frågor: " + questionCounterInt);
-        questionHeader.setText("Skapa fråga: " + (currentQuestion+1));
-        clearForm();
-    }
-
-    public void newQuestion(){
-        currentQuestion = questionList.size();
-        questionHeader.setText("Skapa fråga: " + (currentQuestion+1));
-        clearForm();
-    }
-
-    public void removeQuestion(){
-        currentQuestion = 0;
-        initQuestion(currentQuestion);
+    public void editTestInitSaveQuestion() {
         questionCounterInt = questionList.size();
         questionCounter.setText("Antal frågor: " + questionCounterInt);
     }
@@ -469,7 +469,7 @@ public class AddTest extends BorderPane {
      * Listener for the "Create Test"-Button.
      * @param buttonListener
      */
-    public void createTestBtnListener(EventHandler<ActionEvent> buttonListener) {
+    public void editTestMergeTestBtn(EventHandler<ActionEvent> buttonListener) {
         createTestBtn.setOnAction(buttonListener);
     }
 
@@ -477,11 +477,7 @@ public class AddTest extends BorderPane {
      * Listener for the "Start Over"-button.
      * @param buttonlistener
      */
-    public void startOverBtnListener(EventHandler<ActionEvent> buttonlistener) {
-        startOverBtn.setOnAction(buttonlistener);
-    }
-
-    public void deleteQuestionBtnListener(EventHandler<ActionEvent> buttonListener){
-        deleteQuestion.setOnAction(buttonListener);
+    public void editTestBackBtn(EventHandler<ActionEvent> buttonlistener) {
+        backButton.setOnAction(buttonlistener);
     }
 }

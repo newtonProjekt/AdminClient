@@ -3,6 +3,7 @@ package adminClient.beans;
 /**
  * Created by Johan on 2016-03-04.
  */
+
 public class Login {
 
     private String loginId, password;

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Entity class for the students.
+ * bean-class for the students.
  *
  * Contains login (personal number), name, password and the answers student has submitted to questions.
  */
@@ -39,25 +39,7 @@ public class Student {
 		password = "password";
 	}
 
-	/**
-	 * Constructor when all arguments is supplied.
-	 *
-	 * @param persNumber long
-	 * @param firstName String
-	 * @param surName String
-	 * @param password String
-     */
-	public Student(long persNumber, String firstName, String surName, String password) {
-		answersSubmited = new ArrayList<AnswerSubmited>();
-		testsToTake = new ArrayList<>();
-		this.persNumber = persNumber;
-		this.firstName = firstName;
-		this.surName = surName;
-		this.password = password;
-	}
-
 	// Getters and setters
-
 
 	public int getNewtonClassId() {
 		return newtonClassId;

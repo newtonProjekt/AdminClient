@@ -1,5 +1,6 @@
 package adminClient.beans;
 
+import java.util.Date;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,8 +14,14 @@ public class SchoolTest {
 	private String name;
 	private String subject;
     private int testTime;
-    private String dateCreated;
     private List<Question> questions;
+    private Date dateCreated;
+    private int gThreshold;
+    private int vgThreshold;
+
+    public SchoolTest() {
+        questions = new ArrayList<>();
+    }
 
     public SchoolTest(String name, String subject, int testTime) {
         questions = new ArrayList<>();
@@ -22,6 +29,35 @@ public class SchoolTest {
         this.name = name;
         this.subject = subject;
         this.testTime = testTime;
+    }
+
+
+    public List<Question> getQuestions() {
+        return questions;
+    }
+
+    public Date getDateCreated() {
+        return dateCreated;
+    }
+
+    public void setDateCreated(Date dateCreated) {
+        this.dateCreated = dateCreated;
+    }
+
+    public int getgThreshold() {
+        return gThreshold;
+    }
+
+    public void setgThreshold(int gThreshold) {
+        this.gThreshold = gThreshold;
+    }
+
+    public int getVgThreshold() {
+        return vgThreshold;
+    }
+
+    public void setVgThreshold(int vgThreshold) {
+        this.vgThreshold = vgThreshold;
     }
 
     public Integer getId() {
@@ -58,6 +94,10 @@ public class SchoolTest {
 
     public void addQuestion (Question question){
         questions.add(question);
+    }
+
+    public void updateQuestion (Question oldQuestion, Question newQuestion){
+        questions.set(questions.indexOf(oldQuestion),newQuestion);
     }
 
     public void removeQuestion (Question question){

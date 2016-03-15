@@ -7,12 +7,12 @@ package adminClient.gui;
 import adminClient.beans.NewtonClass;
 import adminClient.beans.SchoolTest;
 import adminClient.beans.TableStudent;
-import javafx.beans.value.ChangeListener;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
@@ -22,11 +22,11 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-import java.awt.*;
 import java.util.ArrayList;
 
 /**
@@ -36,6 +36,7 @@ import java.util.ArrayList;
 public class AdminView {
     //Layouts:
     private ScrollPane createTestScrollPane = new ScrollPane();
+    private ScrollPane editTestScrollPane = new ScrollPane();
     private BorderPane mainBorderPane = new BorderPane();
     private BorderPane testBorderPane = new BorderPane();
     private BorderPane userBorderPane = new BorderPane();
@@ -77,7 +78,7 @@ public class AdminView {
     //GUI-classes:
     private AddUser addUser = new AddUser();
     private AddStudentClass addStudentClass = new AddStudentClass();
-    private AddTest addTest = new AddTest();
+//TEST    private AddTest addTest;
     private EditUser editUser = new EditUser();
     private DeleteStudentClass deleteStudentClass = new DeleteStudentClass();
     private ShareTest shareTest = new ShareTest();
@@ -91,7 +92,7 @@ public class AdminView {
      */
     public AdminView(Stage window) {
         this.window = window;
-        scene = new Scene(mainBorderPane, 800, 600);
+        scene = new Scene(mainBorderPane, 800, 700);
 
         buildGUI();
         initComponents();
@@ -130,7 +131,7 @@ public class AdminView {
         createUserPanel.getChildren().addAll(addUser, newtonClassPanel);
 
         //Add the add test-form to the ScrollPane 'createTestScrollPane'.
-        createTestScrollPane.setContent(addTest);
+//TEST        createTestScrollPane.setContent(addTest);
 
         //Add the test-buttons to the H-box 'handleTestButtons'.
         handleTestButtons.getChildren().addAll(editTestBtn, deleteTestBtn, statTestBtn, shareTestBtn);
@@ -176,7 +177,8 @@ public class AdminView {
         createUserPanel.setStyle("-fx-border-color: #e6e6e6");
         createTestScrollPane.setStyle("-fx-background-color: white;");
         createTestScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
-
+        editTestScrollPane.setStyle("-fx-background-color: white;");
+        editTestScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
         bottomMenuPanel.setPrefHeight(40);
         handleTestButtons.setPadding(new Insets(5, 5, 5, 5));
         handleUserButtons.setPadding(new Insets(5, 5, 5, 5));
@@ -188,62 +190,87 @@ public class AdminView {
         shareTestBtn.setPrefWidth(110);
         createTestScrollPane.setFitToWidth(true);
         createTestScrollPane.setFitToHeight(true);
+        editTestScrollPane.setFitToWidth(true);
+        editTestScrollPane.setFitToHeight(true);
 
         //Autoscroll:
-        addTest.heightProperty().addListener((observable, oldvalue, newValue) -> createTestScrollPane.setVvalue((Double) newValue));
+//TEST        addTest.heightProperty().addListener((observable, oldvalue, newValue) -> createTestScrollPane.setVvalue((Double) newValue));
     }
 
     /**
      * Inits the TableView 'userTableView', also adds the table and buttons to a borderpane.
-     *
      * @param userTable = TableView made from the class User.
      */
     public void setUserTableView(TableView userTable) {
         userTableView = userTable;
+        userTableView.setPrefHeight(800);
+        //Add the TableView 'userTableView' and the H-box 'handleUserButtons' to the V-box 'handleTestPanel'.
         handleUsersPanel.getChildren().addAll(userTableView, handleUserButtons);
     }
 
     /**
      * Inits the TableView 'testTableView', also adds the table and buttons to a borderpane.
-     *
      * @param testTable = TableView made from the class Test.
      */
     public void setTestTableView(TableView testTable) {
         testTableView = testTable;
+        testTableView.setPrefHeight(800);
         //Add the TableView 'testTableView' and the H-box 'handleTestButtons' to the V-box 'handleTestPanel'.
         handleTestPanel.getChildren().addAll(testTableView, handleTestButtons);
     }
 
     /**
      * Get the selected test from the tableview.
-     *
      * @return = the selected test as a "Test"-object.
      */
-    public int getSelectedTest() {
+    public SchoolTest getSelectedTest() {
         SchoolTest selectedTest = (SchoolTest) testTableView.getSelectionModel().getSelectedItem();
-        int selectedTestId = selectedTest.getId();
-        return selectedTestId;
+        return selectedTest;
     }
 
     /**
      * Get the selected user from the tableview.
-     *
      * @return = the selected user as a "User"-object.
      */
     public TableStudent getSelectedUser() {
         TableStudent selectedUser = (TableStudent) userTableView.getSelectionModel().getSelectedItem();
         return selectedUser;
     }
-    public void startOverTest() {
-        addTest = new AddTest();
-        createTestScrollPane.setContent(addTest);
-    }
+
+    /**
+     * Switches to showing the UserTableView when in the "Handle Users"-tab.
+     */
     public void handleUserTable() {
         handleUsersTab.setContent(handleUsersPanel);
     }
+
+    /**
+     * Switches to showing the EditUser-form when in the "Handle Users"-tab.
+     */
     public void handleUserEditUser() {
         handleUsersTab.setContent(editUser);
     }
+
+    public void handleTestTable(){
+        handleTestsTab.setContent(handleTestPanel);
+    }
+
+    public void handleTestEditTest(BorderPane testForm){
+        editTestScrollPane.setContent(testForm);
+        testForm.heightProperty().addListener((observable, oldvalue, newValue) -> editTestScrollPane.setVvalue((Double) newValue));
+        handleTestsTab.setContent(editTestScrollPane);
+    }
+
+    public void createTestContent(BorderPane testForm){
+        createTestScrollPane.setContent(testForm);
+        testForm.heightProperty().addListener((observable, oldvalue, newValue) -> createTestScrollPane.setVvalue((Double) newValue));
+        createTest.setContent(createTestScrollPane);
+
+
+    }
+    /**
+     * Shows the form "ShareTest":
+     */
     public void showShareTest(){
         shareTest.showAndWait();
     }
@@ -273,8 +300,9 @@ public class AdminView {
         addUser.setStudentAdded(student);
     }
 
-
-    //NewtonClass
+    /**
+     * Getters & Setters from the "AddStudentClass"-class, called from the AdminController-class.
+     */
     public void clearAddClassTextField() {
         addStudentClass.clearTextFields();
     }
@@ -282,7 +310,10 @@ public class AdminView {
         return addStudentClass.getStudentClassTextField();
     }
 
-    //add test
+    /**
+     * Getters & Setters from the "AddTest"-class, called from the AdminController-class.
+     */
+    /*
     public void initProceedBtn() {
         addTest.initProceedBtn();
     }
@@ -316,8 +347,13 @@ public class AdminView {
     public void initSaveQuestionBtn() {
         addTest.initSaveQuestionBtn();
     }
-
-    //delete class
+    public GridPane addTestConfirmation(){
+        return addTest.confirmationBox();
+    }
+*/
+    /**
+     * Getters & Setters from the "DeleteStudentClass"-class, called from the AdminController-class.
+     */
     public int newtonClasstoRemove(){
        return deleteStudentClass.classIdToRemove();
     }
@@ -331,7 +367,9 @@ public class AdminView {
         return deleteStudentClass.getDeleteStudentsCb();
     }
 
-    //edit user
+    /**
+     * Getters & Setters from the "EditUser"-class, called from the AdminController-class.
+     */
     public void setOldFname(String fName) {
         editUser.setfNameTextField(fName);
     }
@@ -387,6 +425,7 @@ public class AdminView {
     public void addClassBtnListener(EventHandler<ActionEvent> listener) {
         addStudentClass.addClassButtonListener(listener);
     }
+    /*
     public void proceedBtnListener(EventHandler<ActionEvent> listener) {
         addTest.proceedBtnListener(listener);
     }
@@ -399,6 +438,7 @@ public class AdminView {
     public void startOverBtnListener(EventHandler<ActionEvent> listener) {
         addTest.startOverBtnListener(listener);
     }
+  */
     public void editUserFormButton(EventHandler<ActionEvent> listener) {
         editUser.editUserButtonListener(listener);
     }
@@ -410,5 +450,8 @@ public class AdminView {
     }
     public void shareTestBtnListener(EventHandler<ActionEvent> listener){
         shareTestBtn.setOnAction(listener);
+    }
+    public void createTestTabListener(EventHandler<Event> listener){
+        createTest.setOnSelectionChanged(listener);
     }
 }
