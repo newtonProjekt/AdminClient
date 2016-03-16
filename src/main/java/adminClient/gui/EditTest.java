@@ -48,7 +48,6 @@ public class EditTest extends BorderPane {
     private Label subjectLabel = new Label("Ämne:");
     private Label timeLabel = new Label("Tid i minuter:");
     private Label scoreLabel = new Label("Poäng:");
-    private Label selfCorrectingLabel = new Label("Självrättande prov?");
     private Label answerFormLbl = new Label("Svarsalternativ");
     private Label questionLabel = new Label("Fråga:");
     private Label answerLabel = new Label("Svar:");
@@ -70,9 +69,6 @@ public class EditTest extends BorderPane {
 
     //TextAreas:
     private TextArea questionTextArea = new TextArea();
-
-    //CheckBoxes:
-    private CheckBox selfCorrectingBox = new CheckBox();
 
     //Radiobuttons:
     private ToggleGroup answerRbGroup = new ToggleGroup();
@@ -169,11 +165,9 @@ public class EditTest extends BorderPane {
         testGrid.add(testName, 0, 1);
         testGrid.add(subjectLabel, 0, 2);
         testGrid.add(timeLabel, 0, 3);
-        testGrid.add(selfCorrectingLabel, 0, 4);
         testGrid.add(testNameTextField, 1, 1);
         testGrid.add(subjectTextField, 1, 2);
         testGrid.add(timeTextField, 1, 3);
-        testGrid.add(selfCorrectingBox, 1, 4);
         testGrid.add(proceedBtn, 1, 5);
 
         //Add components to question-gridpane:
@@ -189,18 +183,6 @@ public class EditTest extends BorderPane {
         /**
          * GUI LISTENERS:
          */
-
-        //Listener for "Selfcorrecting test-checkbox":
-        selfCorrectingBox.selectedProperty().addListener((observable, oldValue, newValue) -> {
-
-            //If it is a selfcorrecting test, it can only be a multi answered-question:
-            if (selfCorrectingBox.isSelected()) {
-                multiAnswerRb.fire();
-                textAnswerRb.setDisable(true);
-            } else {
-                textAnswerRb.setDisable(false);
-            }
-        });
 
         //Listener for "Multianswer question-radiobutton":
         multiAnswerRb.setOnAction(event -> {
@@ -430,7 +412,6 @@ public class EditTest extends BorderPane {
         testNameTextField.setDisable(true);
         subjectTextField.setDisable(true);
         timeTextField.setDisable(true);
-        selfCorrectingBox.setDisable(true);
         proceedBtn.setDisable(true);
         this.setCenter(questionGrid);
         initQuestion(currentQuestion);

@@ -7,7 +7,6 @@ package adminClient.gui;
 import adminClient.beans.NewtonClass;
 import adminClient.beans.SchoolTest;
 import adminClient.beans.TableStudent;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
@@ -15,10 +14,6 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
@@ -26,8 +21,6 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-
-import java.util.ArrayList;
 
 /**
  * Created by Jonas on 2016-03-02.
@@ -47,12 +40,13 @@ public class AdminView {
     private HBox handleTestButtons = new HBox(10);
     private VBox handleUsersPanel = new VBox(5);
     private HBox handleUserButtons = new HBox(10);
-    private VBox newtonClassPanel = new VBox(100);
+    private VBox newtonClassPanel = new VBox(10);
     //Buttons:
     private Button editTestBtn = new Button("Redigera prov");
     private Button deleteTestBtn = new Button("Radera prov");
     private Button statTestBtn = new Button("Statistik");
-    private Button shareTestBtn = new Button("Dela prov");
+    private Button shareTestClassesBtn = new Button("Dela prov till klass");
+    private Button shareTestStudentBtn = new Button("Dela prov till student");
     private Button editUserBtn = new Button("Redigera användare");
     private Button deleteUserBtn = new Button("Radera användare");
     //Tabs:
@@ -78,10 +72,8 @@ public class AdminView {
     //GUI-classes:
     private AddUser addUser = new AddUser();
     private AddStudentClass addStudentClass = new AddStudentClass();
-//TEST    private AddTest addTest;
     private EditUser editUser = new EditUser();
     private DeleteStudentClass deleteStudentClass = new DeleteStudentClass();
-    private ShareTest shareTest = new ShareTest();
 
     /**
      * Constructor of the view.
@@ -131,10 +123,9 @@ public class AdminView {
         createUserPanel.getChildren().addAll(addUser, newtonClassPanel);
 
         //Add the add test-form to the ScrollPane 'createTestScrollPane'.
-//TEST        createTestScrollPane.setContent(addTest);
 
         //Add the test-buttons to the H-box 'handleTestButtons'.
-        handleTestButtons.getChildren().addAll(editTestBtn, deleteTestBtn, statTestBtn, shareTestBtn);
+        handleTestButtons.getChildren().addAll(editTestBtn, deleteTestBtn, statTestBtn, shareTestClassesBtn, shareTestStudentBtn);
 
         //Add the user-buttons to the H-box 'handleUserButtons'.
         handleUserButtons.getChildren().addAll(editUserBtn, deleteUserBtn);
@@ -163,7 +154,6 @@ public class AdminView {
         usersTab.setContent(userBorderPane);
         handleTestsTab.setContent(handleTestPanel);
         handleUsersTab.setContent(handleUsersPanel);
-        homeTab.setContent(new Label("Antal upplagda prov, allmän information osv"));
         createUser.setContent(createUserPanel);
         createTest.setContent(createTestScrollPane);
 
@@ -187,14 +177,12 @@ public class AdminView {
         editTestBtn.setPrefWidth(110);
         deleteTestBtn.setPrefWidth(110);
         statTestBtn.setPrefWidth(110);
-        shareTestBtn.setPrefWidth(110);
+        shareTestClassesBtn.setPrefWidth(150);
+        shareTestStudentBtn.setPrefWidth(150);
         createTestScrollPane.setFitToWidth(true);
         createTestScrollPane.setFitToHeight(true);
         editTestScrollPane.setFitToWidth(true);
         editTestScrollPane.setFitToHeight(true);
-
-        //Autoscroll:
-//TEST        addTest.heightProperty().addListener((observable, oldvalue, newValue) -> createTestScrollPane.setVvalue((Double) newValue));
     }
 
     /**
@@ -265,14 +253,14 @@ public class AdminView {
         createTestScrollPane.setContent(testForm);
         testForm.heightProperty().addListener((observable, oldvalue, newValue) -> createTestScrollPane.setVvalue((Double) newValue));
         createTest.setContent(createTestScrollPane);
-
-
     }
-    /**
-     * Shows the form "ShareTest":
-     */
-    public void showShareTest(){
-        shareTest.showAndWait();
+
+    public void homeScreenContent(GridPane homeScreen){
+        homeTab.setContent(homeScreen);
+    }
+
+    public void showAndWait(Stage stage){
+        stage.showAndWait();
     }
 
     /**
@@ -310,47 +298,6 @@ public class AdminView {
         return addStudentClass.getStudentClassTextField();
     }
 
-    /**
-     * Getters & Setters from the "AddTest"-class, called from the AdminController-class.
-     */
-    /*
-    public void initProceedBtn() {
-        addTest.initProceedBtn();
-    }
-    public String getTestName() {
-        return addTest.getTestName();
-    }
-    public String getSubjectName() {
-        return addTest.getSubject();
-    }
-    public int getTestTime() {
-        return addTest.getTestTime();
-    }
-    public boolean getMultiAnswerSelected() {
-        return addTest.getMultiAnswerSelected();
-    }
-    public String getQuestion() {
-        return addTest.getQuestion();
-    }
-    public ArrayList<TextField> getMultiAnswerList() {
-        return addTest.getMultiAnswerList();
-    }
-    public String getCorrectAnswer() {
-        return addTest.getCorrectAnswer();
-    }
-    public int getQuestionPoint() {
-        return addTest.getQuestionPoint();
-    }
-    public boolean getVgQuestion() {
-        return addTest.getVgQuestion();
-    }
-    public void initSaveQuestionBtn() {
-        addTest.initSaveQuestionBtn();
-    }
-    public GridPane addTestConfirmation(){
-        return addTest.confirmationBox();
-    }
-*/
     /**
      * Getters & Setters from the "DeleteStudentClass"-class, called from the AdminController-class.
      */
@@ -425,20 +372,6 @@ public class AdminView {
     public void addClassBtnListener(EventHandler<ActionEvent> listener) {
         addStudentClass.addClassButtonListener(listener);
     }
-    /*
-    public void proceedBtnListener(EventHandler<ActionEvent> listener) {
-        addTest.proceedBtnListener(listener);
-    }
-    public void saveQuestionBtnListener(EventHandler<ActionEvent> listener) {
-        addTest.saveQuestionBtnListener(listener);
-    }
-    public void createTestBtnListener(EventHandler<ActionEvent> listener) {
-        addTest.createTestBtnListener(listener);
-    }
-    public void startOverBtnListener(EventHandler<ActionEvent> listener) {
-        addTest.startOverBtnListener(listener);
-    }
-  */
     public void editUserFormButton(EventHandler<ActionEvent> listener) {
         editUser.editUserButtonListener(listener);
     }
@@ -449,7 +382,10 @@ public class AdminView {
         deleteStudentClass.removeClassBtnListener(listener);
     }
     public void shareTestBtnListener(EventHandler<ActionEvent> listener){
-        shareTestBtn.setOnAction(listener);
+        shareTestClassesBtn.setOnAction(listener);
+    }
+    public void shareTestStudentBtn(EventHandler<ActionEvent> listener){
+        shareTestStudentBtn.setOnAction(listener);
     }
     public void createTestTabListener(EventHandler<Event> listener){
         createTest.setOnSelectionChanged(listener);

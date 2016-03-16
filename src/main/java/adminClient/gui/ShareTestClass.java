@@ -4,6 +4,7 @@ import adminClient.beans.NewtonClass;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -20,7 +21,7 @@ import javafx.stage.Stage;
  * Created by Jonas on 2016-03-14.
  */
 
-public class ShareTest extends Stage {
+public class ShareTestClass extends Stage {
     private BorderPane root = new BorderPane();
     private GridPane gridpane = new GridPane();
     private HBox buttonBox = new HBox(10);
@@ -30,15 +31,18 @@ public class ShareTest extends Stage {
     private ColumnConstraints column3 = new ColumnConstraints(150, 150, Double.MAX_VALUE);
     private Label candidatesLbl = new Label("Inte tillgång till prov:");
     private Label selectedLbl = new Label("Tillgång till prov:");
-    private ObservableList<String> candidateClasses = FXCollections.observableArrayList("JAVA", ".NET", "IT-SÄKERHET", "APPUTVECKLARE");
-    private final ListView<String> candidatesListView = new ListView<>(candidateClasses);
-    private ObservableList<String> selectedClasses = FXCollections.observableArrayList();
-    private ListView<String> selectedClassesListView = new ListView<>(selectedClasses);
+    private ObservableList<NewtonClass> candidateClasses;
+    private final ListView<NewtonClass> candidatesListView;
+    private ObservableList<NewtonClass> selectedClasses = FXCollections.observableArrayList();
+    private ListView<NewtonClass> selectedClassesListView = new ListView<>(selectedClasses);
     private Button sendRightButton = new Button(" > ");
     private Button sendLeftButton = new Button(" < ");
     private Button shareTestBtn = new Button("Dela prov");
 
-    public ShareTest() {
+    public ShareTestClass(ObservableList<NewtonClass> observableList) {
+        this.candidateClasses = observableList;
+        candidatesListView = new ListView<>(candidateClasses);
+
         //the loginbox is in focus, the other stages is disabled:
         this.initModality(Modality.APPLICATION_MODAL);
 
@@ -81,7 +85,7 @@ public class ShareTest extends Stage {
 
         //Listener for "SendRightButton":
         sendRightButton.setOnAction((ActionEvent event) -> {
-            String potential = candidatesListView.getSelectionModel()
+            NewtonClass potential = candidatesListView.getSelectionModel()
                     .getSelectedItem();
             if (potential != null) {
                 candidatesListView.getSelectionModel().clearSelection();
@@ -92,7 +96,7 @@ public class ShareTest extends Stage {
 
         //Listener for "SendLeftButton":
         sendLeftButton.setOnAction((ActionEvent event) -> {
-            String s = selectedClassesListView.getSelectionModel().getSelectedItem();
+            NewtonClass s = selectedClassesListView.getSelectionModel().getSelectedItem();
             if (s != null) {
                 selectedClassesListView.getSelectionModel().clearSelection();
                 selectedClasses.remove(s);
@@ -100,8 +104,17 @@ public class ShareTest extends Stage {
             }
         });
 
-        Scene scene = new Scene(root, 400, 250, Color.WHITE);
+        Scene scene = new Scene(root, 500, 300, Color.WHITE);
         this.setScene(scene);
+
+    }
+
+    public void setShareTestBtnListener(EventHandler<ActionEvent> listener){
+        shareTestBtn.setOnAction(listener);
+    }
+
+    public ObservableList<NewtonClass> getSelectedClasses(){
+        return selectedClasses;
     }
 
 }

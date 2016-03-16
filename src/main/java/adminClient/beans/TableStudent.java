@@ -124,6 +124,11 @@ public class TableStudent {
 		this.testsToTake = testsToTake;
 	}
 
+	@Override
+	public String toString() {
+		return firstName + " " + surName;
+	}
+
 	// Methods to add and remove tests to take.
 
 	public void addTest(SchoolTest currTest){

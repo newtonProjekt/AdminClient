@@ -32,6 +32,11 @@ public class CommandHandler {
         server.send(gson.toJson(currMessage));
     }
 
+    public void sendMessage(Message message){
+        server.send(gson.toJson(message));
+        System.out.println(message);
+    }
+
     public void parse(String jsonData) {
         Message currMessage = gson.fromJson(jsonData, Message.class);
         List<String> cmdData = currMessage.getCommandData();
@@ -61,12 +66,15 @@ public class CommandHandler {
             case "getallstudentclasses":
                 NewtonClass[] newtonClasses = gson.fromJson(cmdData.get(0),NewtonClass[].class);
 
+                adminController.removeClassListener();
 
                 adminController.clearClassList();
+
+                adminController.setClassListener();
+
                 for (int i = 0; i < newtonClasses.length; i++) {
                     adminController.addNewtonClass(newtonClasses[i]);
                 }
-
 
         }
     }

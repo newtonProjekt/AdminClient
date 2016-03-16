@@ -16,6 +16,7 @@ import javafx.collections.ObservableList;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -31,25 +32,28 @@ public class AdminController extends Application{
     private LoginBox loginBox;
     private SchoolTest schoolTest;
     private Student student;
+    private HomeScreen homeScreen;
 
     //Components for tableviews:
     private TableView<TableStudent> userTableView = new UserTable();
-    private TableView<SchoolTest> testTableView = new TestTable();
+    private TestTable testTableView = new TestTable();
 
     private ObservableList<SchoolTest> testObservableList = FXCollections.observableArrayList();
     private ObservableList<TableStudent> studentObservableList = FXCollections.observableArrayList();
     private ObservableList<NewtonClass> studentClassObservableList = FXCollections.observableArrayList();
 
+    //Listener for studentClassObservableList:
+    private ListChangeListener<NewtonClass> classListChangeListener;
+
     @Override
     public void start(Stage primaryStage) throws Exception {
 
-        //TODO kunna redigera prov.
-        //TODO bekräftelse innan man skapar ett prov.
         //TODO dela prov(fixa listan till klassen).
-        //TODO Börja om ett prov.
         //TODO restrict textfields till bara nummer / bokstäver.
         //TODO ifall servern inte svarar vid start av program, skicka meddelande
-        //TODO hemfönstret.
+        //TODO hemfönstret. (orättade prov?)
+        //TODO rätta prov.
+        //TODO dubbelklick på prov mer information, vilka som har tillgång till det
 
         //Create objects of a CommandHandler and a LoginBox:
         commandHandler = new CommandHandler(this);
@@ -76,11 +80,53 @@ public class AdminController extends Application{
         testTableView.setItems(testObservableList);
         userTableView.setItems(studentObservableList);
 
+        /**
+         * Doubleclick on a test shows more information about it:
+         */
+        testTableView.doubleClickRow(click -> {
+            if (click.getClickCount() == 2 && view.getSelectedTest() != null) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setHeaderText(view.getSelectedTest().getName());
+                alert.setTitle("Information om prov");
+                DialogPane dialogPane = alert.getDialogPane();
+
+                String testName = view.getSelectedTest().getName();
+                String subject = view.getSelectedTest().getSubject();
+                String testTime = String.valueOf(view.getSelectedTest().getTestTime());
+                String questionAmount = String.valueOf(view.getSelectedTest().getQuestions().size());
+                String dateCreated = String.valueOf(view.getSelectedTest().getDateCreated());
+
+                TestInformationBox testInformationBox = new TestInformationBox(
+                        testName,subject,testTime,questionAmount,dateCreated
+                );
+
+                dialogPane.setContent(testInformationBox);
+                alert.showAndWait();
+            }
+        });
+
+        /**
+         * If the NewtonClass-list changes, update comboboxes(this is just a reference to the listener):
+         */
+        classListChangeListener = new ListChangeListener<NewtonClass>() {
+            @Override
+            public void onChanged(Change<? extends NewtonClass> c) {
+                view.addUserComboBox(studentClassObservableList);
+                view.editUserComboBox(studentClassObservableList);
+                view.deleteClassCmbBox(studentClassObservableList);
+            }
+        };
+
         //Update the lists with current data:
         commandHandler.send("getalltests","");
         commandHandler.send("getallstudentclasses","");
         commandHandler.send("getallstudents","");
 
+        //Add information to homescreen:
+        Platform.runLater(() -> {
+            homeScreen = new HomeScreen(testObservableList.size(),studentObservableList.size());
+            view.homeScreenContent(homeScreen);
+        });
 
         /**
          * ADD A NEWTONCLASS:
@@ -130,7 +176,7 @@ public class AdminController extends Application{
         view.deleteTestBtnListener(event -> {
             int selectedTestId = view.getSelectedTest().getId();
 
-            commandHandler.send("deletetest",view.getSelectedTest());
+            commandHandler.send("deletetest",selectedTestId);
             commandHandler.send("getalltests","");
         });
 
@@ -155,16 +201,6 @@ public class AdminController extends Application{
             commandHandler.send("getallstudentclasses","");
             commandHandler.send("getallstudents","");
             view.clearDeleteClassCmbBox();
-        });
-
-        /**
-         * If the NewtonClass-list changes, update comboboxes:
-         */
-        studentClassObservableList.addListener((ListChangeListener<NewtonClass>) c -> {
-            view.addUserComboBox(studentClassObservableList);
-            view.editUserComboBox(studentClassObservableList);
-            view.deleteClassCmbBox(studentClassObservableList);
-
         });
 
         /**
@@ -230,10 +266,17 @@ public class AdminController extends Application{
         });
 
         /**
-         * Share a SchoolTest:
+         * Share a SchoolTest to a class:
          */
         view.shareTestBtnListener(event -> {
-           view.showShareTest();
+           shareTestClasses();
+        });
+
+        /**
+         * Share a SchoolTest to a Student:
+         */
+        view.shareTestStudentBtn(event -> {
+            shareTestStudents();
         });
 
         /**
@@ -459,6 +502,66 @@ public class AdminController extends Application{
     }
 
     /**
+     * Creates a form to share a test to classes:
+     */
+    void shareTestClasses(){
+        //If a test is selected:
+        if (view.getSelectedTest() != null) {
+            //create an object of the class ShareTest and send the list with classes:
+            ShareTestClass shareTestClass = new ShareTestClass(studentClassObservableList);
+
+            //Listener for ShareTest-button:
+            shareTestClass.setShareTestBtnListener(event -> {
+                //Get the selectedclasses:
+                ObservableList<NewtonClass> selectedClasses = shareTestClass.getSelectedClasses();
+
+                //loop trough the classes:
+                for (int i = 0; i < selectedClasses.size(); i++) {
+                    Message message = new Message("addtesttoclass");
+                    message.addCommandData(selectedClasses.get(i).getId());
+                    message.addCommandData(view.getSelectedTest().getId());
+                    commandHandler.sendMessage(message);
+                }
+                shareTestClass.close();
+            });
+
+            //Show the GUI:
+            view.showAndWait(shareTestClass);
+
+        }
+    }
+
+    /**
+     * Creates a form to share a test to students:
+     */
+    void shareTestStudents(){
+        //If a test is selected:
+        if (view.getSelectedTest() != null) {
+            //create an object of the class ShareTest and send the list with classes:
+            ShareTestStudent shareTestStudent = new ShareTestStudent(studentObservableList);
+
+            //Listener for ShareTest-button:
+            shareTestStudent.setShareTestBtnListener(event -> {
+                //Get the selectedclasses:
+                ObservableList<TableStudent> selectedStudents = shareTestStudent.getSelectedClasses();
+
+                //loop trough the classes:
+                for (int i = 0; i < selectedStudents.size(); i++) {
+                    Message message = new Message("addtesttostudent");
+                    message.addCommandData(selectedStudents.get(i).getPersNumber());
+                    message.addCommandData(view.getSelectedTest().getId());
+                    commandHandler.sendMessage(message);
+                }
+                shareTestStudent.close();
+            });
+
+            //Show the GUI:
+            view.showAndWait(shareTestStudent);
+
+        }
+    }
+
+    /**
      * Method for adding schooltest to the observablelist:
      * @param schoolTest
      */
@@ -501,6 +604,14 @@ public class AdminController extends Application{
      */
     public void clearClassList(){
         studentClassObservableList.clear();
+    }
+
+    public void setClassListener(){
+        studentClassObservableList.addListener(classListChangeListener);
+    }
+
+    public void removeClassListener(){
+        studentClassObservableList.removeListener(classListChangeListener);
     }
 
     /**
