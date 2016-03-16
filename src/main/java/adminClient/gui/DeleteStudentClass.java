@@ -1,7 +1,6 @@
 package adminClient.gui;
 
 import adminClient.beans.NewtonClass;
-import com.sun.tools.javac.comp.Check;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
