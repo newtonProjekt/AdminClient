@@ -19,6 +19,7 @@ import javafx.scene.text.Text;
  */
 
 public class AddStudentClass extends GridPane {
+
     //Components:
     private Text textHeader = new Text("Skapa ny klass:");
     private Label studentClassLabel = new Label("Klassnamn:");
