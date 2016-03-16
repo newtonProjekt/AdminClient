@@ -40,10 +40,10 @@ public class ShareTestClass extends Stage {
     private Button shareTestBtn = new Button("Dela prov");
 
     public ShareTestClass(ObservableList<NewtonClass> observableList) {
-        this.candidateClasses = observableList;
+        this.candidateClasses = FXCollections.observableArrayList(observableList);
         candidatesListView = new ListView<>(candidateClasses);
 
-        //the loginbox is in focus, the other stages is disabled:
+        //the sharetextbox is in focus, the other stages is disabled:
         this.initModality(Modality.APPLICATION_MODAL);
 
         //Init GridPane:

@@ -17,7 +17,6 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -230,6 +229,8 @@ public class AdminView {
      */
     public void handleUserTable() {
         handleUsersTab.setContent(handleUsersPanel);
+        mainMenuTabPane.getSelectionModel().select(usersTab);
+        usersTabPane.getSelectionModel().select(handleUsersTab);
     }
 
     /**
@@ -241,6 +242,8 @@ public class AdminView {
 
     public void handleTestTable(){
         handleTestsTab.setContent(handleTestPanel);
+        mainMenuTabPane.getSelectionModel().select(testsTab);
+        testsTabPane.getSelectionModel().select(handleUsersTab);
     }
 
     public void handleTestEditTest(BorderPane testForm){
@@ -255,7 +258,7 @@ public class AdminView {
         createTest.setContent(createTestScrollPane);
     }
 
-    public void homeScreenContent(GridPane homeScreen){
+    public void homeScreenContent(HBox homeScreen){
         homeTab.setContent(homeScreen);
     }
 

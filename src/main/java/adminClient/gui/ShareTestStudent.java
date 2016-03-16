@@ -40,10 +40,10 @@ public class ShareTestStudent extends Stage {
     private Button shareTestBtn = new Button("Dela prov");
 
     public ShareTestStudent(ObservableList<TableStudent> observableList) {
-        this.candidateClasses = observableList;
+        this.candidateClasses = FXCollections.observableArrayList(observableList);
         candidatesListView = new ListView<>(candidateClasses);
 
-        //the loginbox is in focus, the other stages is disabled:
+        //the sharetest is in focus, the other stages is disabled:
         this.initModality(Modality.APPLICATION_MODAL);
 
         //Init GridPane:
@@ -85,8 +85,7 @@ public class ShareTestStudent extends Stage {
 
         //Listener for "SendRightButton":
         sendRightButton.setOnAction((ActionEvent event) -> {
-            TableStudent potential = candidatesListView.getSelectionModel()
-                    .getSelectedItem();
+            TableStudent potential = candidatesListView.getSelectionModel().getSelectedItem();
             if (potential != null) {
                 candidatesListView.getSelectionModel().clearSelection();
                 candidateClasses.remove(potential);

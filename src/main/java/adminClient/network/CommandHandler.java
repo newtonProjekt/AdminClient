@@ -60,7 +60,6 @@ public class CommandHandler {
                 for (int i = 0; i < students.length; i++) {
                     adminController.addStudent(students[i]);
                 }
-
                 break;
 
             case "getallstudentclasses":
@@ -75,7 +74,15 @@ public class CommandHandler {
                 for (int i = 0; i < newtonClasses.length; i++) {
                     adminController.addNewtonClass(newtonClasses[i]);
                 }
+                break;
 
+            case "getteststudents":
+                long[] pNumberArray = gson.fromJson(cmdData.get(0),long[].class);
+
+                for (int i = 0; i < pNumberArray.length; i++) {
+                    adminController.addClassToInformationBox(pNumberArray[i]);
+                }
+                break;
         }
     }
 

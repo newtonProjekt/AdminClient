@@ -33,6 +33,7 @@ public class AdminController extends Application{
     private SchoolTest schoolTest;
     private Student student;
     private HomeScreen homeScreen;
+    private TestInformationBox testInformationBox;
 
     //Components for tableviews:
     private TableView<TableStudent> userTableView = new UserTable();
@@ -85,10 +86,16 @@ public class AdminController extends Application{
          */
         testTableView.doubleClickRow(click -> {
             if (click.getClickCount() == 2 && view.getSelectedTest() != null) {
+
+                //Create an information-box that show information:
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setHeaderText(view.getSelectedTest().getName());
                 alert.setTitle("Information om prov");
                 DialogPane dialogPane = alert.getDialogPane();
+
+                ButtonType buttonTypeDelete = new ButtonType("Ta bort");
+                ButtonType buttonTypeOk = new ButtonType("Ok");
+                alert.getButtonTypes().setAll(buttonTypeDelete,buttonTypeOk);
 
                 String testName = view.getSelectedTest().getName();
                 String subject = view.getSelectedTest().getSubject();
@@ -96,12 +103,29 @@ public class AdminController extends Application{
                 String questionAmount = String.valueOf(view.getSelectedTest().getQuestions().size());
                 String dateCreated = String.valueOf(view.getSelectedTest().getDateCreated());
 
-                TestInformationBox testInformationBox = new TestInformationBox(
+                boolean looping = true;
+                while (looping) {
+                testInformationBox = new TestInformationBox(
                         testName,subject,testTime,questionAmount,dateCreated
                 );
 
+                //Get all students that have access to the test:
+                commandHandler.send("getteststudents",view.getSelectedTest().getId());
                 dialogPane.setContent(testInformationBox);
-                alert.showAndWait();
+
+                    Optional<ButtonType> result = alert.showAndWait();
+                    if (result.get() == buttonTypeDelete) {
+                        System.out.println(view.getSelectedTest().getId());
+                        System.out.println(testInformationBox.getSelectedStudentId());
+                        Message message = new Message("removetestfromstudent");
+                        message.addCommandData(testInformationBox.getSelectedStudentId());
+                        message.addCommandData(view.getSelectedTest().getId());
+                        commandHandler.sendMessage(message);
+                    } else {
+                        looping = false;
+                        alert.close();
+                    }
+                }
             }
         });
 
@@ -125,17 +149,29 @@ public class AdminController extends Application{
         //Add information to homescreen:
         Platform.runLater(() -> {
             homeScreen = new HomeScreen(testObservableList.size(),studentObservableList.size());
+
+            homeScreen.clickTestBox(event -> {
+                view.handleTestTable();
+            });
+
+            homeScreen.clickUserBox(event -> {
+                view.handleUserTable();
+            });
+
             view.homeScreenContent(homeScreen);
+
         });
 
         /**
          * ADD A NEWTONCLASS:
          */
         view.addClassBtnListener(event1 -> {
-            NewtonClass newtonClass = new NewtonClass(view.getStudentClass());
-            commandHandler.send("putnewtonclass",newtonClass);
-            commandHandler.send("getallstudentclasses","");
-            view.clearAddClassTextField();
+            if (!view.getStudentClass().equals("")) {
+                NewtonClass newtonClass = new NewtonClass(view.getStudentClass());
+                commandHandler.send("putnewtonclass", newtonClass);
+                commandHandler.send("getallstudentclasses", "");
+                view.clearAddClassTextField();
+            }
         });
 
         /**
@@ -539,6 +575,9 @@ public class AdminController extends Application{
         if (view.getSelectedTest() != null) {
             //create an object of the class ShareTest and send the list with classes:
             ShareTestStudent shareTestStudent = new ShareTestStudent(studentObservableList);
+            for (int i = 0; i < studentObservableList.size(); i++) {
+                System.out.println(studentObservableList.get(i));
+            }
 
             //Listener for ShareTest-button:
             shareTestStudent.setShareTestBtnListener(event -> {
@@ -557,7 +596,6 @@ public class AdminController extends Application{
 
             //Show the GUI:
             view.showAndWait(shareTestStudent);
-
         }
     }
 
@@ -612,6 +650,15 @@ public class AdminController extends Application{
 
     public void removeClassListener(){
         studentClassObservableList.removeListener(classListChangeListener);
+    }
+
+    public void addClassToInformationBox(long pNumb){
+        for (int i = 0; i < studentObservableList.size(); i++) {
+            if (pNumb == studentObservableList.get(i).getPersNumber()){
+                testInformationBox.addStudent(studentObservableList.get(i));
+                System.out.println(studentObservableList.get(i));
+            }
+        }
     }
 
     /**

@@ -25,13 +25,13 @@ public class UserTable extends TableView<TableStudent> {
         this.setEditable(true);
 
         userPersNumb.setCellValueFactory(new PropertyValueFactory<>("persNumber"));
-        userPersNumb.setPrefWidth(138);
+        userPersNumb.setPrefWidth(132);
         userFirstName.setCellValueFactory(new PropertyValueFactory<>("firstName"));
         userFirstName.setPrefWidth(280);
         userLastName.setCellValueFactory(new PropertyValueFactory<>("surName"));
         userLastName.setPrefWidth(280);
         userStudentClass.setCellValueFactory(new PropertyValueFactory<>("newtonClass"));
-        userStudentClass.setPrefWidth(100);
+        userStudentClass.setPrefWidth(106);
 
         this.getColumns().setAll(userPersNumb, userFirstName, userLastName, userStudentClass);
 
