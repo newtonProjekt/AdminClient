@@ -365,10 +365,37 @@ public class AdminController extends Application{
 
     void correctTest(){
         CorrectTest correctTest = new CorrectTest(schoolTestToCorrect,submittedTestToCorrect);
+        CorrectedTest correctedTest = new CorrectedTest(studentToCorrect);
         view.homeScreenContent(correctTest);
 
         correctTest.setBackButton(click -> {
             view.homeScreenContent(homeScreen);
+        });
+
+        correctTest.setCorrectQuestionBtn(event -> {
+
+            int testId = correctTest.getCurrTest();
+            int questionId = correctTest.getCurrQuestion();
+            int pointsAwarded = correctTest.getPoints();
+            long studentId = studentToCorrect;
+            String comment = correctTest.getComment();
+
+            AnswerCorrected answerCorrected = new AnswerCorrected(
+                    testId,questionId,pointsAwarded,studentId,comment
+            );
+
+            correctedTest.addAnswer(answerCorrected);
+
+            correctTest.setQuestionCorrected();
+            correctTest.setComment();
+            correctTest.setScore();
+
+        });
+
+        correctTest.setDoneButton(event -> {
+
+            commandHandler.send("putcorrectedtest", correctedTest);
+
         });
 
     }

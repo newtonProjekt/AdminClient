@@ -25,6 +25,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -82,6 +83,9 @@ public class CorrectTest extends BorderPane {
 
     private List<Question> questionList;
     private List<AnswerSubmited> answerSubmitedList;
+    private ArrayList<String> correctLabelList = new ArrayList<>();
+    private ArrayList<String> commentList = new ArrayList<>();
+    private ArrayList<String> scoreList = new ArrayList<>();
 
     private SchoolTest schoolTest;
     private SubmittedTest submittedTest;
@@ -98,8 +102,11 @@ public class CorrectTest extends BorderPane {
         questionList = schoolTest.getQuestions();
         answerSubmitedList = submittedTest.getAnswersSubmited();
 
-        System.out.println(answerSubmitedList);
-
+        for (int i = 0; i < questionList.size(); i++) {
+            correctLabelList.add("(Inte rättad)");
+            commentList.add("");
+            scoreList.add("");
+        }
 
         initTest();
         initQuestion(currentQuestion);
@@ -183,7 +190,6 @@ public class CorrectTest extends BorderPane {
          * GUI LISTENERS:
          */
         lastQuestionBtn.setOnAction(event -> {
-            System.out.println("minus " + currentQuestion);
             if (currentQuestion > 0){
                 currentQuestion--;
                 initQuestion(currentQuestion);
@@ -206,11 +212,18 @@ public class CorrectTest extends BorderPane {
 
     public void initQuestion(int questionId) {
         question = questionList.get(questionId);
-        questionHeader.setText("Rätta fråga: " + (questionId + 1));
+        questionHeader.setText("Rätta fråga: " + (questionId + 1) + " " + correctLabelList.get(questionId));
         schoolTestScore.setText(" / " + question.getPoints() + " poäng.");
 
         questionTextArea.setText(questionList.get(questionId).getQuestionText());
         questionTextArea.setEditable(false);
+
+        studentAnswerTextArea.setText(answerSubmitedList.get(questionId).getAnswerString());
+        studentAnswerTextArea.setEditable(false);
+
+        commentTextArea.setText(commentList.get(questionId));
+
+        scoreTextField.setText(scoreList.get(questionId));
 
     }
 
@@ -220,6 +233,10 @@ public class CorrectTest extends BorderPane {
      */
     void clearForm() {
         questionTextArea.clear();
+    }
+
+    public int getCurrTest(){
+        return schoolTest.getId();
     }
 
     public int getCurrQuestion(){
@@ -244,6 +261,20 @@ public class CorrectTest extends BorderPane {
 
     public void setDoneButton (EventHandler<ActionEvent> click){
         doneButton.setOnAction(click);
+    }
+
+    public void setQuestionCorrected(){
+        correctLabelList.set(currentQuestion,"(Rättad)");
+        questionHeader.setText("Rätta fråga: " + (currentQuestion + 1) + " " + correctLabelList.get(currentQuestion));
+
+    }
+
+    public void setComment(){
+        commentList.set(currentQuestion,commentTextArea.getText());
+    }
+
+    public void setScore(){
+        scoreList.set(currentQuestion,scoreTextField.getText());
     }
 
 
