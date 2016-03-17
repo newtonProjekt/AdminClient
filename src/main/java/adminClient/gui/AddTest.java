@@ -267,7 +267,7 @@ public class AddTest extends BorderPane {
 
             //If the value is not null, show save question-button:
             if (correctAnswerCmbBox.getValue() != null) {
-                questionGrid.getChildren().remove(questionBtnBox);
+                questionGrid.getChildren().removeAll(scoreLabel,answerHBox,questionBtnBox);
                 questionGrid.add(scoreLabel, 0, 7);
                 questionGrid.add(answerHBox, 1, 7);
                 questionGrid.add(questionBtnBox, 1, 8);

@@ -249,7 +249,6 @@ public class EditTest extends BorderPane {
         });
 
         lastQuestionBtn.setOnAction(event -> {
-            System.out.println("minus " + currentQuestion);
             if (currentQuestion > 0){
                 currentQuestion--;
                 initQuestion(currentQuestion);
