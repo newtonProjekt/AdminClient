@@ -50,7 +50,7 @@ public class HomeScreen extends HBox {
 
         testsAmountText.setText("Antal prov: " + testsAmount);
         usersAmountText.setText("Antal studenter: " + usersAmount);
-        unCorrectedTestText.setText("Antal orättade prov: " + testsToCorrectTableView.getItems().size());
+        unCorrectedTestText.setText("Orättade prov:");
 
         testBox.setAlignment(Pos.CENTER);
         testBox.setPadding(new Insets(20,20,20,20));

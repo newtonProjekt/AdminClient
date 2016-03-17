@@ -159,17 +159,16 @@ public class AdminController extends Application{
             });
 
             homeScreen.clickCorrectButton(event -> {
-                studentToCorrect = homeScreen.getSelectedTestToCorrect().getTestUserNumber();
-                Message message = new Message("gettesttocorrect");
-                message.addCommandData(homeScreen.getSelectedTestToCorrect().getTestUserNumber());
-                message.addCommandData(homeScreen.getSelectedTestToCorrect().getTestId());
-                commandHandler.sendMessage(message);
-
+                if (homeScreen.getSelectedTestToCorrect() != null) {
+                    studentToCorrect = homeScreen.getSelectedTestToCorrect().getTestUserNumber();
+                    Message message = new Message("gettesttocorrect");
+                    message.addCommandData(homeScreen.getSelectedTestToCorrect().getTestUserNumber());
+                    message.addCommandData(homeScreen.getSelectedTestToCorrect().getTestId());
+                    commandHandler.sendMessage(message);
+                }
             });
 
-
             view.homeScreenContent(homeScreen);
-
         });
 
         /**
@@ -565,7 +564,7 @@ public class AdminController extends Application{
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.initStyle(StageStyle.UTILITY);
             alert.setTitle(null);
-            alert.setHeaderText("Bekräftelse på att skapa prov");
+            alert.setHeaderText("Bekräftelse på redigerat prov");
             alert.getDialogPane().setContent(editTest.confirmationBox());
 
             Optional<ButtonType> result = alert.showAndWait();

@@ -7,6 +7,7 @@ package adminClient.gui;
 import adminClient.beans.TestsToCorrect;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -30,6 +31,7 @@ public class TestsToCorrectTable extends TableView<TestsToCorrect>{
         testUser.setCellValueFactory(new PropertyValueFactory<TestsToCorrect,String>("testUser"));
         testUser.setPrefWidth(200);
 
+        this.setPlaceholder(new Label("Inga orättade prov."));
         this.getColumns().setAll(testName, testUser);
 
     }

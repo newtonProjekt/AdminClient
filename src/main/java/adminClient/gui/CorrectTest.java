@@ -4,10 +4,7 @@ package adminClient.gui;
  * Class for creating a "Correct test-form".
  */
 
-import adminClient.beans.AnswerSubmited;
-import adminClient.beans.Question;
-import adminClient.beans.SchoolTest;
-import adminClient.beans.SubmittedTest;
+import adminClient.beans.*;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
@@ -87,6 +84,7 @@ public class CorrectTest extends BorderPane {
     private SchoolTest schoolTest;
     private SubmittedTest submittedTest;
     private Question question;
+    private AnswerSubmited answerSubmited;
 
     private int questionCounterInt = 0;
     private int currentQuestion = 0;
@@ -103,6 +101,10 @@ public class CorrectTest extends BorderPane {
             correctLabelList.add("(Inte rättad)");
             commentList.add("");
             scoreList.add("");
+
+            if (questionList.get(i).isMultiQuestion()){
+                questionList.remove(questionList.get(i));
+            }
         }
 
         initTest();
@@ -223,13 +225,20 @@ public class CorrectTest extends BorderPane {
     public void initQuestion(int questionId) {
         if (!questionList.get(questionId).isMultiQuestion()) {
             question = questionList.get(questionId);
+
+            for (int i = 0; i < answerSubmitedList.size(); i++) {
+                if (answerSubmitedList.get(i).getQuestionId() == question.getId()){
+                    answerSubmited = answerSubmitedList.get(i);
+                }
+            }
+
             questionHeader.setText("Rätta fråga: " + (questionId + 1) + " " + correctLabelList.get(questionId));
             schoolTestScore.setText(" / " + question.getPoints() + " poäng");
 
             questionTextArea.setText(questionList.get(questionId).getQuestionText());
             questionTextArea.setEditable(false);
 
-            studentAnswerTextArea.setText(answerSubmitedList.get(questionId).getAnswerString());
+            studentAnswerTextArea.setText(answerSubmited.getAnswerString());
             studentAnswerTextArea.setEditable(false);
 
             commentTextArea.setText(commentList.get(questionId));
