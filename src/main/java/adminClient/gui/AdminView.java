@@ -12,6 +12,7 @@ import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
@@ -258,7 +259,7 @@ public class AdminView {
         createTest.setContent(createTestScrollPane);
     }
 
-    public void homeScreenContent(HBox homeScreen){
+    public void homeScreenContent(Node homeScreen){
         homeTab.setContent(homeScreen);
     }
 

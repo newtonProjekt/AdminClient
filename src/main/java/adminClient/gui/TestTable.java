@@ -39,8 +39,6 @@ public class TestTable extends TableView<SchoolTest>{
 
     }
 
-
-
     public void setTableList (ObservableList<SchoolTest> testObservableList){
         this.setItems(testObservableList);
     }

@@ -15,7 +15,6 @@ public class AnswerCorrected {
 	private int questionId;
 	private int pointsAwarded;
 	private long studentId;
-
 	private String comment;
 
 	public AnswerCorrected() {

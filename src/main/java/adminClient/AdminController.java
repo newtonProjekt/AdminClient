@@ -18,7 +18,6 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Optional;
 
@@ -30,7 +29,8 @@ public class AdminController extends Application{
     private AdminView view;
     private CommandHandler commandHandler;
     private LoginBox loginBox;
-    private SchoolTest schoolTest;
+    private SchoolTest schoolTestToCorrect;
+    private SubmittedTest submittedTestToCorrect;
     private Student student;
     private HomeScreen homeScreen;
     private TestInformationBox testInformationBox;
@@ -38,17 +38,18 @@ public class AdminController extends Application{
     //Components for tableviews:
     private TableView<TableStudent> userTableView = new UserTable();
     private TestTable testTableView = new TestTable();
+    private TestsToCorrectTable testsToCorrectTable = new TestsToCorrectTable();
 
     private ObservableList<SchoolTest> testObservableList = FXCollections.observableArrayList();
     private ObservableList<TableStudent> studentObservableList = FXCollections.observableArrayList();
     private ObservableList<NewtonClass> studentClassObservableList = FXCollections.observableArrayList();
+    private ObservableList<TestsToCorrect> testsToCorrectList = FXCollections.observableArrayList();
 
     //Listener for studentClassObservableList:
     private ListChangeListener<NewtonClass> classListChangeListener;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-
         //TODO dela prov(fixa listan till klassen).
         //TODO restrict textfields till bara nummer / bokstäver.
         //TODO ifall servern inte svarar vid start av program, skicka meddelande
@@ -80,9 +81,10 @@ public class AdminController extends Application{
         view.setTestTableView(testTableView);
         testTableView.setItems(testObservableList);
         userTableView.setItems(studentObservableList);
+        testsToCorrectTable.setItems(testsToCorrectList);
 
         /**
-         * Doubleclick on a test shows more information about it:
+         * Doubleclick on a test in the table shows more information about it:
          */
         testTableView.doubleClickRow(click -> {
             if (click.getClickCount() == 2 && view.getSelectedTest() != null) {
@@ -115,8 +117,7 @@ public class AdminController extends Application{
 
                     Optional<ButtonType> result = alert.showAndWait();
                     if (result.get() == buttonTypeDelete) {
-                        System.out.println(view.getSelectedTest().getId());
-                        System.out.println(testInformationBox.getSelectedStudentId());
+
                         Message message = new Message("removetestfromstudent");
                         message.addCommandData(testInformationBox.getSelectedStudentId());
                         message.addCommandData(view.getSelectedTest().getId());
@@ -145,10 +146,14 @@ public class AdminController extends Application{
         commandHandler.send("getalltests","");
         commandHandler.send("getallstudentclasses","");
         commandHandler.send("getallstudents","");
+        commandHandler.send("getteststocorrect","");
 
         //Add information to homescreen:
         Platform.runLater(() -> {
-            homeScreen = new HomeScreen(testObservableList.size(),studentObservableList.size());
+            homeScreen = new HomeScreen(
+                    testsToCorrectList.size(), testObservableList.size(),
+                    studentObservableList.size(), testsToCorrectTable
+            );
 
             homeScreen.clickTestBox(event -> {
                 view.handleTestTable();
@@ -157,6 +162,17 @@ public class AdminController extends Application{
             homeScreen.clickUserBox(event -> {
                 view.handleUserTable();
             });
+
+            homeScreen.clickCorrectButton(event -> {
+                Message message = new Message("gettesttocorrect");
+                message.addCommandData(homeScreen.getSelectedTestToCorrect().getTestUserNumber());
+                message.addCommandData(homeScreen.getSelectedTestToCorrect().getTestId());
+                commandHandler.sendMessage(message);
+
+
+
+            });
+
 
             view.homeScreenContent(homeScreen);
 
@@ -333,6 +349,17 @@ public class AdminController extends Application{
         });
     }
 
+    void correctTest(){
+        CorrectTest correctTest = new CorrectTest(schoolTestToCorrect,submittedTestToCorrect);
+        view.homeScreenContent(correctTest);
+
+        correctTest.setBackButton(click -> {
+            view.homeScreenContent(homeScreen);
+        });
+
+    }
+
+
     void addTest(){
         //create a new test:
         SchoolTest schoolTest = new SchoolTest();
@@ -394,7 +421,7 @@ public class AdminController extends Application{
             alert.setHeaderText("Bekräftelse på att skapa prov");
             alert.getDialogPane().setContent(addTest.confirmationBox());
 
-            Date today = new Date(Calendar.getInstance().getTimeInMillis());
+            Date today = new Date();
 
             Optional<ButtonType> result = alert.showAndWait();
             if (result.get() == ButtonType.OK){
@@ -512,9 +539,7 @@ public class AdminController extends Application{
 
                 view.handleTestTable();
             }
-
         });
-
     }
 
     /**
@@ -622,6 +647,10 @@ public class AdminController extends Application{
         studentObservableList.add(student);
     }
 
+    public void addTestToCorrect(TestsToCorrect testsToCorrect){
+        testsToCorrectList.add(testsToCorrect);
+    }
+
     /**
      * Method for adding a NewtonClass to the observablelist:
      * @param newtonClass
@@ -659,6 +688,17 @@ public class AdminController extends Application{
                 System.out.println(studentObservableList.get(i));
             }
         }
+    }
+
+    public void addSubmittedTestToCorrect(SubmittedTest submittedTest){
+        submittedTestToCorrect = submittedTest;
+    }
+
+    public void addSchoolTestToCorrect(SchoolTest schoolTest){
+        schoolTestToCorrect = schoolTest;
+
+        //start correct test-gui:
+        Platform.runLater(() -> correctTest());
     }
 
     /**

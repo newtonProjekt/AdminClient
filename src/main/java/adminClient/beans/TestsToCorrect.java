@@ -8,7 +8,7 @@ package adminClient.beans;
 public class TestsToCorrect {
 
     private int testId;
-    private long testNumber;
+    private long testUserNumber;
     private String testName;
     private String testUser;
 
@@ -17,7 +17,7 @@ public class TestsToCorrect {
 
     public TestsToCorrect(int testId, long testNumber, String testName, String testUser) {
         this.testId = testId;
-        this.testNumber = testNumber;
+        this.testUserNumber = testNumber;
         this.testName = testName;
         this.testUser = testUser;
     }
@@ -30,12 +30,12 @@ public class TestsToCorrect {
         this.testId = testId;
     }
 
-    public long getTestNumber() {
-        return testNumber;
+    public long getTestUserNumber() {
+        return testUserNumber;
     }
 
-    public void setTestNumber(long testNumber) {
-        this.testNumber = testNumber;
+    public void setTestUserNumber(long testUserNumber) {
+        this.testUserNumber = testUserNumber;
     }
 
     public String getTestName() {
@@ -52,5 +52,15 @@ public class TestsToCorrect {
 
     public void setTestUser(String testUser) {
         this.testUser = testUser;
+    }
+
+    @Override
+    public String toString() {
+        return "TestsToCorrect{" +
+                "testId=" + testId +
+                ", testUserNumber=" + testUserNumber +
+                ", testName='" + testName + '\'' +
+                ", testUser='" + testUser + '\'' +
+                '}';
     }
 }
