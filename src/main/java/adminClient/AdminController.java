@@ -31,6 +31,7 @@ public class AdminController extends Application{
     private LoginBox loginBox;
     private SchoolTest schoolTestToCorrect;
     private SubmittedTest submittedTestToCorrect;
+    private long studentToCorrect;
     private Student student;
     private HomeScreen homeScreen;
     private TestInformationBox testInformationBox;
@@ -164,12 +165,11 @@ public class AdminController extends Application{
             });
 
             homeScreen.clickCorrectButton(event -> {
+                studentToCorrect = homeScreen.getSelectedTestToCorrect().getTestUserNumber();
                 Message message = new Message("gettesttocorrect");
                 message.addCommandData(homeScreen.getSelectedTestToCorrect().getTestUserNumber());
                 message.addCommandData(homeScreen.getSelectedTestToCorrect().getTestId());
                 commandHandler.sendMessage(message);
-
-
 
             });
 
@@ -266,18 +266,21 @@ public class AdminController extends Application{
          * Edit a students information (creates a form):
          */
         view.editUserBtnListener(event -> {
-            TableStudent selectedStudent = view.getSelectedUser();
+            if (view.getSelectedUser() != null) {
 
-            view.setOldFname(selectedStudent.getFirstName());
-            view.setOldLname(selectedStudent.getSurName());
-            view.setOldPnumb(selectedStudent.getPersNumber());
+                TableStudent selectedStudent = view.getSelectedUser();
 
-            for (int i = 0; i < studentClassObservableList.size(); i++) {
-                if (studentClassObservableList.get(i).getId() == selectedStudent.getNewtonClassId()){
-                    view.editUserSetComboBox(studentClassObservableList.get(i));
+                view.setOldFname(selectedStudent.getFirstName());
+                view.setOldLname(selectedStudent.getSurName());
+                view.setOldPnumb(selectedStudent.getPersNumber());
+
+                for (int i = 0; i < studentClassObservableList.size(); i++) {
+                    if (studentClassObservableList.get(i).getId() == selectedStudent.getNewtonClassId()) {
+                        view.editUserSetComboBox(studentClassObservableList.get(i));
+                    }
                 }
+                view.handleUserEditUser();
             }
-            view.handleUserEditUser();
         });
 
         /**
@@ -287,7 +290,17 @@ public class AdminController extends Application{
             String fName = view.getNewFname();
             String lName = view.getNewLname();
             long pNumb = Long.parseLong(view.getNewPnumb());
-            Student student = new Student(pNumb,fName,lName);
+            String password = view.getNewPassword();
+
+            Student student;
+
+
+            if (!password.equals("")){
+                student = new Student(pNumb,fName,lName,password);
+            }
+            else {
+                student = new Student(pNumb, fName, lName);
+            }
 
             if (view.editUserSelectedClass() != null) {
                 NewtonClass newtonClass = view.editUserSelectedClass();
@@ -295,7 +308,7 @@ public class AdminController extends Application{
                 int newtonClassId = 0;
 
                 for (int i = 0; i < studentClassObservableList.size(); i++) {
-                    if (studentClassObservableList.get(i).getName().equals(newtonClass.getName())){
+                    if (studentClassObservableList.get(i).getName().equals(newtonClass.getName())) {
                         newtonClassId = studentClassObservableList.get(i).getId();
                     }
                 }
@@ -303,11 +316,12 @@ public class AdminController extends Application{
                 student.setNewtonClassId(newtonClassId);
             }
 
-            commandHandler.send("updatestudent",student);
-            commandHandler.send("getallstudents","");
+            commandHandler.send("updatestudent", student);
+            commandHandler.send("getallstudents", "");
 
             view.clearEditUserTextFields();
             view.handleUserTable();
+
         });
 
         /**
@@ -358,7 +372,6 @@ public class AdminController extends Application{
         });
 
     }
-
 
     void addTest(){
         //create a new test:

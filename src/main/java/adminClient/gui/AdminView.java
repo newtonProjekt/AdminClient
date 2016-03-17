@@ -339,6 +339,9 @@ public class AdminView {
     public String getNewPnumb() {
         return editUser.getpNumberTextField();
     }
+    public String getNewPassword(){
+        return editUser.getNewPassword();
+    }
     public void clearEditUserTextFields() {
         editUser.clearTextFields();
     }

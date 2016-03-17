@@ -32,9 +32,11 @@ public class EditUser extends GridPane{
     private Label lNameLabel = new Label("Efternamn:");
     private Label pNumberLabel = new Label("Personnummer:");
     private Label studentClassLabel = new Label("Klass:");
+    private Label passwordLabel = new Label("Lösenord:");
     private TextField fNameTextField = new TextField();
     private TextField lNameTextField = new TextField();
     private TextField pNumberTextField = new TextField();
+    private TextField passwordTextField = new TextField();
     private Button backButton = new Button("Tillbaka");
     private Button editUserButton = new Button("Klar");
     private ColumnConstraints column1 = new ColumnConstraints();
@@ -54,18 +56,23 @@ public class EditUser extends GridPane{
         this.setAlignment(Pos.TOP_CENTER);
         buttonBox.getChildren().addAll(backButton,editUserButton);
         pNumberTextField.setDisable(true);
+        editUserButton.setPrefWidth(80);
+        backButton.setPrefWidth(80);
 
         //Add components to gridpane:
         this.add(headerText,1,0);
         this.add(fNameLabel,0,1);
         this.add(lNameLabel,0,2);
         this.add(pNumberLabel,0,3);
-        this.add(studentClassLabel,0,4);
+        this.add(passwordLabel,0,4);
+        this.add(studentClassLabel,0,5);
         this.add(fNameTextField,1,1);
         this.add(lNameTextField,1,2);
         this.add(pNumberTextField,1,3);
-        this.add(comboBox,1,4);
-        this.add(buttonBox,1,5);
+        this.add(passwordTextField,1,4);
+        this.add(comboBox,1,5);
+        this.add(buttonBox,1,6);
+
 
         //Updates the combobox with the student class-names:
         comboBox.setCellFactory(new Callback<ListView<NewtonClass>, ListCell<NewtonClass>>() {
@@ -133,6 +140,10 @@ public class EditUser extends GridPane{
 
     public NewtonClass getSelectedClass(){
         return comboBox.getSelectionModel().getSelectedItem();
+    }
+
+    public String getNewPassword(){
+        return passwordTextField.getText();
     }
 
     public void clearTextFields(){

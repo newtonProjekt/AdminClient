@@ -98,6 +98,8 @@ public class CorrectTest extends BorderPane {
         questionList = schoolTest.getQuestions();
         answerSubmitedList = submittedTest.getAnswersSubmited();
 
+        System.out.println(answerSubmitedList);
+
 
         initTest();
         initQuestion(currentQuestion);
@@ -137,13 +139,19 @@ public class CorrectTest extends BorderPane {
         scoreHbox.getChildren().addAll(scoreTextField, schoolTestScore);
 
         questionTextArea.setPrefHeight(400);
-        questionTextArea.setMinHeight(100);
+        studentAnswerTextArea.setPrefHeight(400);
+        commentTextArea.setPrefHeight(400);
+
         bottomBtnBorderPane.setPadding(new Insets(5, 5, 5, 5));
         backButton.setPrefWidth(110);
         doneButton.setPrefWidth(110);
         nextQuestionBtn.setPrefWidth(110);
         questionCounterInt = questionList.size();
         questionCounter.setText("Antal frågor: " + (questionCounterInt));
+
+        scoreTextField.setPrefWidth(40);
+        schoolTestScore.setFont(Font.font(14));
+        scoreHbox.setAlignment(Pos.CENTER_LEFT);
 
         //Add components to test-gridpane:
         testGrid.add(testName, 0, 1);
@@ -198,8 +206,11 @@ public class CorrectTest extends BorderPane {
 
     public void initQuestion(int questionId) {
         question = questionList.get(questionId);
-        questionHeader.setText("Redigera fråga: " + (questionId + 1));
-        scoreLabel.setText("/" + question.getPoints() + "poäng");
+        questionHeader.setText("Rätta fråga: " + (questionId + 1));
+        schoolTestScore.setText(" / " + question.getPoints() + " poäng.");
+
+        questionTextArea.setText(questionList.get(questionId).getQuestionText());
+        questionTextArea.setEditable(false);
 
     }
 
@@ -211,9 +222,30 @@ public class CorrectTest extends BorderPane {
         questionTextArea.clear();
     }
 
+    public int getCurrQuestion(){
+        return currentQuestion;
+    }
+
+    public String getComment(){
+        return commentTextArea.getText();
+    }
+
+    public int getPoints(){
+        return Integer.parseInt(scoreTextField.getText());
+    }
+
     public void setBackButton (EventHandler<ActionEvent> click){
         backButton.setOnAction(click);
     }
+
+    public void setCorrectQuestionBtn (EventHandler<ActionEvent> click){
+        correctQuestionBtn.setOnAction(click);
+    }
+
+    public void setDoneButton (EventHandler<ActionEvent> click){
+        doneButton.setOnAction(click);
+    }
+
 
 
 }

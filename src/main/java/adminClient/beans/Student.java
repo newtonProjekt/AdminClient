@@ -39,6 +39,15 @@ public class Student {
 		password = "password";
 	}
 
+	public Student(long persNumber, String firstName, String surName, String password){
+		answersSubmited = new ArrayList<AnswerSubmited>();
+		testsToTake = new ArrayList<>();
+		this.persNumber = persNumber;
+		this.firstName = firstName;
+		this.surName = surName;
+		this.password = password;
+	}
+
 	// Getters and setters
 
 	public int getNewtonClassId() {
