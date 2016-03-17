@@ -1,7 +1,7 @@
 package adminClient.gui;
 
 /**
- * Class for creating a "Add test-form".
+ * Class for creating a "Correct test-form".
  */
 
 import adminClient.beans.AnswerSubmited;
@@ -60,9 +60,6 @@ public class CorrectTest extends BorderPane {
     private Label confirmationName = new Label();
     private Label confirmationSubject = new Label();
     private Label confirmationTime = new Label();
-
-    private Label confirmationQuestions = new Label("Antal frågor:");
-    private Label confirmationCounter = new Label();
 
     //TextAreas:
     private TextArea questionTextArea = new TextArea();
@@ -153,8 +150,14 @@ public class CorrectTest extends BorderPane {
         backButton.setPrefWidth(110);
         doneButton.setPrefWidth(110);
         nextQuestionBtn.setPrefWidth(110);
-        questionCounterInt = questionList.size();
-        questionCounter.setText("Antal frågor: " + (questionCounterInt));
+
+        //count the textanswer-questions:
+        for (Question aQuestionList : questionList) {
+            if (!aQuestionList.isMultiQuestion()) {
+                questionCounterInt++;
+            }
+        }
+        questionCounter.setText("Fråga: " + (currentQuestion+1) + " / " + (questionCounterInt));
 
         scoreTextField.setPrefWidth(40);
         schoolTestScore.setFont(Font.font(14));
@@ -190,18 +193,25 @@ public class CorrectTest extends BorderPane {
          * GUI LISTENERS:
          */
         lastQuestionBtn.setOnAction(event -> {
-            if (currentQuestion > 0){
-                currentQuestion--;
-                initQuestion(currentQuestion);
-            }
+            lastQuestion();
         });
 
         nextQuestionBtn.setOnAction(event -> {
-            if (currentQuestion < questionList.size()-1){
-                currentQuestion++;
-                initQuestion(currentQuestion);
-            }
+            nextQuestion();
         });
+    }
+
+    void lastQuestion(){
+        if (currentQuestion > 0){
+            currentQuestion--;
+            initQuestion(currentQuestion);
+        }
+    }
+    public void nextQuestion(){
+        if (currentQuestion < questionList.size()-1){
+            currentQuestion++;
+            initQuestion(currentQuestion);
+        }
     }
 
     public void initTest(){
@@ -211,36 +221,32 @@ public class CorrectTest extends BorderPane {
     }
 
     public void initQuestion(int questionId) {
-        question = questionList.get(questionId);
-        questionHeader.setText("Rätta fråga: " + (questionId + 1) + " " + correctLabelList.get(questionId));
-        schoolTestScore.setText(" / " + question.getPoints() + " poäng.");
+        if (!questionList.get(questionId).isMultiQuestion()) {
+            question = questionList.get(questionId);
+            questionHeader.setText("Rätta fråga: " + (questionId + 1) + " " + correctLabelList.get(questionId));
+            schoolTestScore.setText(" / " + question.getPoints() + " poäng");
 
-        questionTextArea.setText(questionList.get(questionId).getQuestionText());
-        questionTextArea.setEditable(false);
+            questionTextArea.setText(questionList.get(questionId).getQuestionText());
+            questionTextArea.setEditable(false);
 
-        studentAnswerTextArea.setText(answerSubmitedList.get(questionId).getAnswerString());
-        studentAnswerTextArea.setEditable(false);
+            studentAnswerTextArea.setText(answerSubmitedList.get(questionId).getAnswerString());
+            studentAnswerTextArea.setEditable(false);
 
-        commentTextArea.setText(commentList.get(questionId));
+            commentTextArea.setText(commentList.get(questionId));
 
-        scoreTextField.setText(scoreList.get(questionId));
-
+            scoreTextField.setText(scoreList.get(questionId));
+        }
     }
-
 
     /**
      * Clears the form.
      */
-    void clearForm() {
-        questionTextArea.clear();
-    }
-
     public int getCurrTest(){
         return schoolTest.getId();
     }
 
     public int getCurrQuestion(){
-        return currentQuestion;
+        return questionList.get(currentQuestion).getId();
     }
 
     public String getComment(){
@@ -266,7 +272,6 @@ public class CorrectTest extends BorderPane {
     public void setQuestionCorrected(){
         correctLabelList.set(currentQuestion,"(Rättad)");
         questionHeader.setText("Rätta fråga: " + (currentQuestion + 1) + " " + correctLabelList.get(currentQuestion));
-
     }
 
     public void setComment(){
@@ -276,7 +281,4 @@ public class CorrectTest extends BorderPane {
     public void setScore(){
         scoreList.set(currentQuestion,scoreTextField.getText());
     }
-
-
-
 }

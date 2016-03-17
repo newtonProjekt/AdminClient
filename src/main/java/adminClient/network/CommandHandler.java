@@ -28,13 +28,11 @@ public class CommandHandler {
     public <T> void send(String cmd, T cmdData) {
         Message currMessage = new Message(cmd, cmdData);
 
-        System.out.println(currMessage);
         server.send(gson.toJson(currMessage));
     }
 
     public void sendMessage(Message message){
         server.send(gson.toJson(message));
-        System.out.println(message);
     }
 
     public void parse(String jsonData) {
@@ -87,12 +85,12 @@ public class CommandHandler {
             case "getteststocorrect":
                 TestsToCorrect[] testsToCorrect = gson.fromJson(cmdData.get(0),TestsToCorrect[].class);
 
+                adminController.clearTestsToCorrect();
                 for (int i = 0; i < testsToCorrect.length; i++) {
                     adminController.addTestToCorrect(testsToCorrect[i]);
-
-                    System.out.println(testsToCorrect[i].toString());
                 }
                 break;
+
             case "gettesttocorrect":
                 SubmittedTest submittedTest = gson.fromJson(cmdData.get(0),SubmittedTest.class);
                 SchoolTest schoolTest = gson.fromJson(cmdData.get(1),SchoolTest.class);
@@ -101,7 +99,6 @@ public class CommandHandler {
                 adminController.addSchoolTestToCorrect(schoolTest);
 
                 break;
-
         }
     }
 

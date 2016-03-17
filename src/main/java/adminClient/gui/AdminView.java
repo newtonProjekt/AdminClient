@@ -44,7 +44,7 @@ public class AdminView {
     //Buttons:
     private Button editTestBtn = new Button("Redigera prov");
     private Button deleteTestBtn = new Button("Radera prov");
-    private Button statTestBtn = new Button("Statistik");
+    //private Button statTestBtn = new Button("Statistik");
     private Button shareTestClassesBtn = new Button("Dela prov till klass");
     private Button shareTestStudentBtn = new Button("Dela prov till student");
     private Button editUserBtn = new Button("Redigera användare");
@@ -94,7 +94,6 @@ public class AdminView {
 
         scene.getStylesheets().add("file:Stylesheet.css"); //check the file Stylesheet.css
         window.show();
-
     }
 
     /**
@@ -125,7 +124,7 @@ public class AdminView {
         //Add the add test-form to the ScrollPane 'createTestScrollPane'.
 
         //Add the test-buttons to the H-box 'handleTestButtons'.
-        handleTestButtons.getChildren().addAll(editTestBtn, deleteTestBtn, statTestBtn, shareTestClassesBtn, shareTestStudentBtn);
+        handleTestButtons.getChildren().addAll(editTestBtn, deleteTestBtn, shareTestClassesBtn, shareTestStudentBtn);
 
         //Add the user-buttons to the H-box 'handleUserButtons'.
         handleUserButtons.getChildren().addAll(editUserBtn, deleteUserBtn);
@@ -176,7 +175,6 @@ public class AdminView {
         editUserBtn.setPrefWidth(150);
         editTestBtn.setPrefWidth(110);
         deleteTestBtn.setPrefWidth(110);
-        statTestBtn.setPrefWidth(110);
         shareTestClassesBtn.setPrefWidth(150);
         shareTestStudentBtn.setPrefWidth(150);
         createTestScrollPane.setFitToWidth(true);
@@ -241,28 +239,47 @@ public class AdminView {
         handleUsersTab.setContent(editUser);
     }
 
+    /**
+     * Switches to showing the "Handle Tests"-tab:
+     */
     public void handleTestTable(){
         handleTestsTab.setContent(handleTestPanel);
         mainMenuTabPane.getSelectionModel().select(testsTab);
         testsTabPane.getSelectionModel().select(handleUsersTab);
     }
 
+    /**
+     * Switches to showing a borderpane in the "Handle Tests"-tab:
+     * @param testForm = BorderPane.
+     */
     public void handleTestEditTest(BorderPane testForm){
         editTestScrollPane.setContent(testForm);
         testForm.heightProperty().addListener((observable, oldvalue, newValue) -> editTestScrollPane.setVvalue((Double) newValue));
         handleTestsTab.setContent(editTestScrollPane);
     }
 
+    /**
+     * Switches content when creating a test:
+     * @param testForm
+     */
     public void createTestContent(BorderPane testForm){
         createTestScrollPane.setContent(testForm);
         testForm.heightProperty().addListener((observable, oldvalue, newValue) -> createTestScrollPane.setVvalue((Double) newValue));
         createTest.setContent(createTestScrollPane);
     }
 
+    /**
+     * Switches content when creating a test:
+     * @param homeScreen = A node.
+     */
     public void homeScreenContent(Node homeScreen){
         homeTab.setContent(homeScreen);
     }
 
+    /**
+     * Show and wait.
+     * @param stage = A stage.
+     */
     public void showAndWait(Stage stage){
         stage.showAndWait();
     }
@@ -363,9 +380,6 @@ public class AdminView {
     }
     public void deleteTestBtnListener(EventHandler<ActionEvent> listener) {
         deleteTestBtn.setOnAction(listener);
-    }
-    public void statTestBtnListener(EventHandler<ActionEvent> listener) {
-        statTestBtn.setOnAction(listener);
     }
     public void editUserBtnListener(EventHandler<ActionEvent> listener) {
         editUserBtn.setOnAction(listener);

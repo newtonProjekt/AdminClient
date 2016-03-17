@@ -294,6 +294,10 @@ public class AddTest extends BorderPane {
         });
     }
 
+    /**
+     * Creates a Confirmationbox when clicking create test:
+     * @return GridPane - the confirmation box.
+     */
     public GridPane confirmationBox(){
         GridPane gridPane = new GridPane();
 
@@ -400,7 +404,10 @@ public class AddTest extends BorderPane {
         this.setCenter(questionGrid);
     }
 
-
+    /**
+     * Inits form with question:
+     * @param questionId = current question:
+     */
     public void initQuestion(int questionId){
         question = questionList.get(questionId);
         List<Answer> answerList = question.getAnswers();
@@ -452,12 +459,18 @@ public class AddTest extends BorderPane {
         clearForm();
     }
 
+    /**
+     * Creating a new question:
+     */
     public void newQuestion(){
         currentQuestion = questionList.size();
         questionHeader.setText("Skapa fråga: " + (currentQuestion+1));
         clearForm();
     }
 
+    /**
+     * Removing a question:
+     */
     public void removeQuestion(){
         currentQuestion = 0;
         initQuestion(currentQuestion);
@@ -481,6 +494,10 @@ public class AddTest extends BorderPane {
         startOverBtn.setOnAction(buttonlistener);
     }
 
+    /**
+     * Listener for the "Delete Question"-button:
+     * @param buttonListener
+     */
     public void deleteQuestionBtnListener(EventHandler<ActionEvent> buttonListener){
         deleteQuestion.setOnAction(buttonListener);
     }

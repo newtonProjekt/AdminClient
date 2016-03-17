@@ -34,7 +34,7 @@ public class HomeScreen extends HBox {
     private TableView<TestsToCorrect> unCorrectedTestTableView;
     private Button correctButton = new Button("Rätta prov");
 
-    public HomeScreen(int testsToCorrectAmount, int testsAmount, int usersAmount, TableView<TestsToCorrect> testsToCorrectTableView) {
+    public HomeScreen(int testsAmount, int usersAmount, TableView<TestsToCorrect> testsToCorrectTableView) {
         this.unCorrectedTestTableView = testsToCorrectTableView;
 
         GridPane gridPane = new GridPane();
@@ -50,7 +50,7 @@ public class HomeScreen extends HBox {
 
         testsAmountText.setText("Antal prov: " + testsAmount);
         usersAmountText.setText("Antal studenter: " + usersAmount);
-        unCorrectedTestText.setText("Antal orättade prov: " + testsToCorrectAmount);
+        unCorrectedTestText.setText("Antal orättade prov: " + testsToCorrectTableView.getItems().size());
 
         testBox.setAlignment(Pos.CENTER);
         testBox.setPadding(new Insets(20,20,20,20));
@@ -72,6 +72,10 @@ public class HomeScreen extends HBox {
         gridPane.add(userBox,1,0);
 
         this.getChildren().addAll(gridPane, unCorrectTestBox);
+    }
+
+    public void setUnCorrectTests(int amount){
+        unCorrectedTestText.setText("Antal orättade prov: " + amount);
     }
 
     public void clickTestBox(EventHandler<MouseEvent> click){

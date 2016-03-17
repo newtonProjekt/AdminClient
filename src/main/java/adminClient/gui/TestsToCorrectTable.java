@@ -20,7 +20,7 @@ import javafx.scene.input.MouseEvent;
 public class TestsToCorrectTable extends TableView<TestsToCorrect>{
 
     private TableColumn<TestsToCorrect, String> testName = new TableColumn<TestsToCorrect, String>("Prov");
-    private TableColumn<TestsToCorrect, String> testUser = new TableColumn<TestsToCorrect, String>("Elev");
+    private TableColumn<TestsToCorrect, String> testUser = new TableColumn<TestsToCorrect, String>("Student");
 
     public TestsToCorrectTable() {
         this.setEditable(true);

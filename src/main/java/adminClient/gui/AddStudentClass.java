@@ -1,5 +1,9 @@
 package adminClient.gui;
 
+/**
+ * Class for creating a "Add Class-form".
+ */
+
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
@@ -54,12 +58,17 @@ public class AddStudentClass extends GridPane {
         addClassButton.setOnAction(buttonListener);
     }
 
-    //Getters & setters:
+    /**
+     * Gets classname:
+     * @return class as a String.
+     */
     public String getStudentClassTextField() {
         return studentClassTextField.getText();
     }
 
-
+    /**
+     * Clears textfields:
+     */
     public void clearTextFields(){
         studentClassTextField.clear();
     }

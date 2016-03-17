@@ -51,12 +51,6 @@ public class AdminController extends Application{
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        //TODO dela prov(fixa listan till klassen).
-        //TODO restrict textfields till bara nummer / bokstäver.
-        //TODO ifall servern inte svarar vid start av program, skicka meddelande
-        //TODO hemfönstret. (orättade prov?)
-        //TODO rätta prov.
-        //TODO dubbelklick på prov mer information, vilka som har tillgång till det
 
         //Create objects of a CommandHandler and a LoginBox:
         commandHandler = new CommandHandler(this);
@@ -152,7 +146,7 @@ public class AdminController extends Application{
         //Add information to homescreen:
         Platform.runLater(() -> {
             homeScreen = new HomeScreen(
-                    testsToCorrectList.size(), testObservableList.size(),
+                    testObservableList.size(),
                     studentObservableList.size(), testsToCorrectTable
             );
 
@@ -389,13 +383,15 @@ public class AdminController extends Application{
             correctTest.setQuestionCorrected();
             correctTest.setComment();
             correctTest.setScore();
-
+            correctTest.nextQuestion();
         });
 
         correctTest.setDoneButton(event -> {
 
             commandHandler.send("putcorrectedtest", correctedTest);
+            commandHandler.send("getteststocorrect","");
 
+            Platform.runLater(() -> view.homeScreenContent(homeScreen));
         });
 
     }
@@ -689,6 +685,10 @@ public class AdminController extends Application{
 
     public void addTestToCorrect(TestsToCorrect testsToCorrect){
         testsToCorrectList.add(testsToCorrect);
+    }
+
+    public void clearTestsToCorrect(){
+        testsToCorrectList.clear();
     }
 
     /**
